@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "noEmit": true,
+    "incremental": true,
+    "module": "esnext",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "include": [
+    "next-env.d.ts",
+    ".next/types/**/*.ts",
+    "**/*.ts",
+    "**/*.tsx"
+, "components/BookingForm.jsx", "app/admin/AdminDashBoard/bootcamp-participants.jsx", "app/admin/AdminDashBoard/page.jsx", "app/admin/AdminDashBoard/bootcamp-upload.jsx", "app/admin/AdminDashBoard/intern-assignment.jsx", "app/admin/AdminDashBoard/lab-booking.jsx", "app/admin/AdminDashBoard/past-bootcamps.jsx", "app/admin/AdminDashBoard/sidebar.jsx", "app/PastWorkshopsVideos/columns.jsx", "app/PastWorkshopsVideos/data-table.jsx", "app/UpcomingWorkshop/columns.jsx", "app/UpcomingWorkshop/data-table.jsx", "app/PastWorkshopsVideos/page.tsx", "app/UpcomingWorkshop/page.jsx"  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
