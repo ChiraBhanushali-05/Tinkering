@@ -61,7 +61,7 @@ export default function MultiDropdowns() {
   };
 
   return (
-    <div className="w-full bg-primary_color2 mt-2">
+    <div className="w-full pb-12 bg-primary_color2 mt-2">
       {/* Container to align all dropdowns in one line */}
       <div className="flex flex-wrap justify-center gap-4 py-2">
         {dropdowns.map((dropdown, index) => (
