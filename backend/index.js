@@ -128,7 +128,7 @@ app.get('/api/auth/session', async (req, res) => {
   try {
     if (req.isAuthenticated()) {
       // Assuming req.user is populated with user data
-      const { _id, name, email, role, institution, department, phone, registeredWebinars } = req.user;
+      const { _id, name, email, role, institution, department, phone, registeredWebinars,enrollmentNo } = req.user;
 
       // Return only the required user information including registeredWebinars
       res.json({
@@ -140,6 +140,7 @@ app.get('/api/auth/session', async (req, res) => {
           department: department,
           phoneNumber: phone,
           role: role,
+          enrollmentNo:enrollmentNo,
           registeredWebinars: registeredWebinars || [], // Ensure it's an array
         },
       });

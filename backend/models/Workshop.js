@@ -7,6 +7,12 @@ const workshopSchema = new mongoose.Schema({
   registrationDeadline: { type: Date, required: true },        // Registration deadline
   capacity: { type: Number, required: true },                  // Maximum capacity
   description: { type: String, required: true },               // Description
+  registeredUsers: [
+    {
+      enrollmentNo: { type:Number },  // User ID (MongoDB ObjectId)
+      registrationDateTime: { type: Date, default: Date.now }, // Registration date and time
+    },
+  ],
 });
 
 const Workshop = mongoose.model("Workshop", workshopSchema);

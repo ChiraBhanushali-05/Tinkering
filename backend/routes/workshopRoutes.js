@@ -15,7 +15,7 @@ const validateRegistration = (req, res, next) => {
 
 // Endpoint to register a user for a workshop
 router.post('/register', validateRegistration, async (req, res) => {
-  const { userId, workshopId } = req.body;
+  const { userId, workshopId, enrollmentNo } = req.body;
 
   try {
     // Check if the user exists
@@ -40,23 +40,26 @@ router.post('/register', validateRegistration, async (req, res) => {
       return res.status(400).json({ message: 'Workshop capacity has been reached.' });
     }
 
-    // Check if user is already registered
-    if (workshop.registeredUsers.includes(userId)) {
+    // Check if user is already registered by comparing enrollment number
+    const userRegistered = workshop.registeredUsers.find((user) => user.enrollmentNo === enrollmentNo);
+    if (userRegistered) {
       return res.status(400).json({ message: 'User is already registered for this workshop.' });
     }
 
     // Register the user
-    workshop.registeredUsers.push(userId);
+    workshop.registeredUsers.push({
+      enrollmentNo: enrollmentNo,  // Store enrollment number
+      registrationDateTime: new Date() // Current date and time
+    });
     await workshop.save();
 
     res.status(200).json({ message: 'Registration successful!' });
   } catch (error) {
-    console.error(error);
+    console.error('Error registering for workshop:', error);
     res.status(500).json({ message: 'Error registering for workshop.', error: error.message });
   }
 });
-
-// Endpoint to upload a workshop (for admin)
+  // Endpoint to upload a workshop (for admin)
 router.post("/upload", async (req, res) => {
   const { title, conductor,date, registrationDeadline, capacity, description } = req.body;
 
