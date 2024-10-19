@@ -9,25 +9,6 @@ import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { X } from "lucide-react";
 
-// Function to fetch user data
-async function getUserData() {
-  try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/session`, {
-      method: "GET",
-      credentials: "include",
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch user data");
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Error fetching user data:", error);
-    return { name: '', enrollmentNumber: '', whatsappNumber: '' };
-  }
-}
-
 // Function to fetch workshop data
 async function getData() {
   try {
@@ -35,7 +16,7 @@ async function getData() {
     if (!response.ok) {
       throw new Error("Failed to fetch workshops");
     }
-    
+
     const workshops = await response.json();
     const formattedWorkshops = workshops.map((workshop) => {
       const date = new Date(workshop.date); // Assuming `workshop.date` contains the timestamp
@@ -58,11 +39,6 @@ export default function DemoPage() {
   const [data, setData] = useState([]); // State for holding fetched workshop data
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
-  const [userDetails, setUserDetails] = useState({
-    name: '',
-    enrollmentNumber: '',
-    whatsappNumber: '',
-  });
 
   useEffect(() => {
     async function fetchData() {
@@ -72,15 +48,9 @@ export default function DemoPage() {
     fetchData();
   }, []);
 
-  const handleBookClick = async (row) => {
-    const userData = await getUserData();
+  const handleBookClick = (row) => {
     setSelectedRow(row);
     setIsPopupOpen(true);
-    setUserDetails({
-      name: userData.name || '',
-      enrollmentNumber: userData.enrollmentNumber || '',
-      whatsappNumber: userData.whatsappNumber || '',
-    });
   };
 
   const handleClosePopup = () => {
@@ -117,36 +87,17 @@ export default function DemoPage() {
             </button>
             <h2 className="text-2xl font-bold mb-4 text-black">Book Workshop</h2>
             <form onSubmit={handleBookSubmit} className="space-y-4">
-              <div >
+              <div>
                 <Label className="text-black" htmlFor="name">Name</Label>
-                <Input 
-                  id="name" 
-                  placeholder="Enter your name" 
-                  value={userDetails.name}
-                  onChange={(e) => setUserDetails({ ...userDetails, name: e.target.value })} 
-                  required 
-                />
-                <Input className="text-black" id="name" placeholder="Enter your name" required />
+                <Input id="name" placeholder="Enter your name" required />
               </div>
               <div>
                 <Label className="text-black" htmlFor="enrollmentNumber">Enrollment Number</Label>
-                <Input 
-                  id="enrollmentNumber" 
-                  placeholder="Enter your enrollment number" 
-                  value={userDetails.enrollmentNumber} 
-                  onChange={(e) => setUserDetails({ ...userDetails, enrollmentNumber: e.target.value })} 
-                  required 
-                />
+                <Input id="enrollmentNumber" placeholder="Enter your enrollment number" required />
               </div>
               <div>
                 <Label className="text-black" htmlFor="whatsappNumber">WhatsApp Number</Label>
-                <Input 
-                  id="whatsappNumber" 
-                  placeholder="Enter your WhatsApp number" 
-                  value={userDetails.whatsappNumber} 
-                  onChange={(e) => setUserDetails({ ...userDetails, whatsappNumber: e.target.value })} 
-                  required 
-                />
+                <Input id="whatsappNumber" placeholder="Enter your WhatsApp number" required />
               </div>
               <Button type="submit" className="w-full">Book</Button>
             </form>
