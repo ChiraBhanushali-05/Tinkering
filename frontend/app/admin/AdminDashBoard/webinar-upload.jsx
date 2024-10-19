@@ -18,32 +18,36 @@ export function WebinarUpload() {
   const [webinarName, setWebinarName] = React.useState("");
   const [presenter, setPresenter] = React.useState("");
   const [description, setDescription] = React.useState("");
-  const [link, setLink] = React.useState("");
+  const [maxParticipants, setMaxParticipants] = React.useState("");
+  const [duration, setDuration] = React.useState("");
+  const [category, setCategory] = React.useState("");
+  const [image, setImage] = React.useState(null); // For image upload
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    const webinarData = {
-      webinarName,
-      presenter,
-      date,
-      description,
-      link,
-    };
+
+    // Create FormData object to hold the webinar data
+    const formData = new FormData();
+    formData.append("name", webinarName);
+    formData.append("conductor", presenter);
+    formData.append("date", date ? date.toISOString() : "");
+    formData.append("description", description);
+    formData.append("maxParticipants", maxParticipants);
+    formData.append("duration", duration);
+    formData.append("category", category);
+    if (image) {
+      formData.append("image", image); // Append the image file
+    }
 
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/webinars`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(webinarData),
+        body: formData, // Send FormData
       });
 
       const data = await response.json();
       if (response.ok) {
-        alert(data.message); // Show success message
-        // Reset form fields if needed
+        alert("Webinar uploaded successfully! Webinar ID: " + data.webinarId);
       } else {
         alert("Failed to upload webinar: " + data.message);
       }
@@ -110,15 +114,44 @@ export function WebinarUpload() {
           />
         </div>
         <div>
-          <Label htmlFor="link">Webinar Link</Label>
+          <Label htmlFor="maxParticipants">Max Participants</Label>
           <Input
-            id="link"
-            placeholder="Enter webinar link"
-            value={link}
-            onChange={(e) => setLink(e.target.value)}
+            type="number"
+            id="maxParticipants"
+            placeholder="Enter max participants"
+            value={maxParticipants}
+            onChange={(e) => setMaxParticipants(e.target.value)}
           />
         </div>
-        <Button type="submit">Upload Webinar</Button>
+        <div>
+          <Label htmlFor="duration">Duration (in minutes)</Label>
+          <Input
+            type="number"
+            id="duration"
+            placeholder="Enter duration"
+            value={duration}
+            onChange={(e) => setDuration(e.target.value)}
+          />
+        </div>
+        <div>
+          <Label htmlFor="category">Category</Label>
+          <Input
+            id="category"
+            placeholder="Enter webinar category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          />
+        </div>
+        <div>
+          <Label htmlFor="image">Upload Image</Label>
+          <Input
+            type="file"
+            id="image"
+            accept="image/png, image/jpeg"
+            onChange={(e) => setImage(e.target.files[0])} // Store selected file
+          />
+        </div>
+        <Button type="submit" className="w-full">Upload Webinar</Button>
       </form>
     </div>
   );

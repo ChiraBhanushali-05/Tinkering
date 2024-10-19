@@ -6,12 +6,13 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const path = require('path');
 const cookieParser = require('cookie-parser');
 const { Strategy: GoogleStrategy } = require('passport-google-oauth20');
 const webinarRoutes = require("./routes/WeninarRoutes");
 dotenv.config();
 const User = require('./models/User'); // MongoDB user model
-
+const registerRoutes = require('./routes/register'); 
 const app = express();
 
 // Middleware to parse JSON bodies
@@ -50,6 +51,7 @@ app.use(
 );
 
 // Passport setup
+// Passport setup
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -64,18 +66,26 @@ passport.use(
       try {
         let user = await User.findOne({ googleId: profile.id });
 
-        // Extract email part before '@' and check if it's only numbers
+        // Extract email part before '@' to use as enrollment number
         const emailUsername = profile.emails[0].value.split('@')[0];
-        const role = /^\d+$/.test(emailUsername) ? 'student' : 'staff'; // Assign role based on criteria
+        // Check if the extracted part is all digits (i.e., valid enrollment number)
+        const enrollmentNo = /^\d+$/.test(emailUsername) ? emailUsername : null;
 
-        // If the user doesn't exist, create a new one
+        const role = enrollmentNo ? 'student' : 'staff'; // Assign role based on enrollment number
+
+        // If the user doesn't exist, create a new one with enrollmentNo
         if (!user) {
           user = await User.create({
             googleId: profile.id,
             name: profile.displayName,
             email: profile.emails[0].value,
             role, // Assign the determined role
+            enrollmentNo, // Save email username as enrollmentNo (or null)
           });
+        } else if (user.enrollmentNo === undefined) {
+          // If the user exists but enrollmentNo is not set, update it
+          user.enrollmentNo = enrollmentNo; // Save emailUsername only if it's digits, else null
+          await user.save();
         }
 
         done(null, user);
@@ -86,12 +96,12 @@ passport.use(
   )
 );
 
-
 passport.serializeUser((user, done) => done(null, user.id));
 passport.deserializeUser(async (id, done) => {
   const user = await User.findById(id);
   done(null, user);
 });
+app.use('/api', registerRoutes);
 app.use("/api/webinars", webinarRoutes);
 // Routes
 app.get(
@@ -187,8 +197,8 @@ app.post('/api/auth/user', async (req, res) => {
     return res.status(500).json({ message: 'Server error' });
   }
 });
-
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Start server
 app.listen(5000, () => {
   console.log('Server running on http://localhost:5000');
-});
+}); 
