@@ -23,13 +23,44 @@ export default function AdminDashboard() {
   const [activeSection, setActiveSection] = useState('workshop')
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true) // Loading state
 
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768)
       setIsSidebarOpen(window.innerWidth >= 768)
     }
-    checkMobile()
+
+    const fetchUserSession = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/session`, {
+          credentials: "include",
+        });
+        const data = await response.json();
+
+        if (data.user) {
+          setUser(data.user);
+          // Redirect if the role is not "admin"
+          if (data.user.role !== "admin") {
+            window.location.href = "http://localhost:3000"; // Redirect to localhost:3000 if not admin
+          }
+        } else {
+          window.location.href = "http://localhost:3000"; // Redirect to localhost:3000 if no user is logged in
+        }
+      } catch (error) {
+        console.error("Error fetching user session:", error);
+        window.location.href = "http://localhost:3000"; // Redirect to localhost:3000 on error
+      } finally {
+        setTimeout(() => {
+          setLoading(false); // Simulate longer loading time
+        }, 3000); // Adjust this value for the desired loading time (3000 ms = 3 seconds)
+      }
+    };
+
+    fetchUserSession(); // Fetch user session on component mount
+
+    checkMobile();
     window.addEventListener('resize', checkMobile)
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
@@ -49,6 +80,10 @@ export default function AdminDashboard() {
       default:
         return <div>Select a section</div>
     }
+  }
+
+  if (loading) {
+    return <div className="flex items-center justify-center h-screen">Loading...</div>; // Display loading message
   }
 
   return (
@@ -110,3 +145,4 @@ export default function AdminDashboard() {
     </div>
   )
 }
+  
