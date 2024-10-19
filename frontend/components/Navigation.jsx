@@ -130,7 +130,9 @@
       }
     };
     
-
+    const handleGoogleLogin = () => {
+      window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/auth/google`;
+    };
     const handleLogout = () => {
       window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`;
     };
@@ -334,7 +336,7 @@
           </motion.div>
         </div>
     
-        <SheetDemo isOpen={isMenuOpen} onClose={toggleMenu} />
+        <SheetDemo isOpen={isMenuOpen} onClose={toggleMenu} onGoogleLogin={handleGoogleLogin} />
       </>
     );
     

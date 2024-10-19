@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../../../components/ui/card";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
@@ -22,58 +22,35 @@ import {
 const ITEMS_PER_PAGE = 5;
 
 export function WebinarParticipants() {
-  const [webinars, setWebinars] = useState([
-    {
-      id: "WEB001",
-      name: "Introduction to React",
-      image: "/placeholder.svg?height=100&width=200",
-      dateTime: "2023-07-20 14:00 PM",
-      participants: [
-        { id: "WEB001-P001", name: "John Doe", email: "john@example.com" },
-        { id: "WEB001-P002", name: "Jane Smith", email: "jane@example.com" },
-        { id: "WEB001-P003", name: "Alice Johnson", email: "alice@example.com" },
-        { id: "WEB001-P004", name: "Ethan Hunt", email: "ethan@example.com" },
-      ]
-    },
-    {
-      id: "WEB002",
-      name: "Advanced TypeScript",
-      image: "/placeholder.svg?height=100&width=200",
-      dateTime: "2023-08-05 10:00 AM",
-      participants: [
-        { id: "WEB002-P001", name: "Bob Williams", email: "bob@example.com" },
-        { id: "WEB002-P002", name: "Fiona Apple", email: "fiona@example.com" },
-      ]
-    },
-    {
-      id: "WEB003",
-      name: "React Native Essentials",
-      image: "/placeholder.svg?height=100&width=200",
-      dateTime: "2023-08-15 15:30 PM",
-      participants: [
-        { id: "WEB003-P001", name: "Charlie Brown", email: "charlie@example.com" },
-      ]
-    },
-    {
-      id: "WEB004",
-      name: "Node.js Fundamentals",
-      image: "/placeholder.svg?height=100&width=200",
-      dateTime: "2023-08-25 13:00 PM",
-      participants: [
-        { id: "WEB004-P001", name: "Diana Prince", email: "diana@example.com" },
-        { id: "WEB004-P001", name: "Diana Prince", email: "diana@example.com" },
-        
-      ]
-    },
-  ]);
-
+  const [webinars, setWebinars] = useState([]);
   const [selectedWebinar, setSelectedWebinar] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true); // Loading state
 
+  useEffect(() => {
+    const fetchWebinars = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/webinars/with-participants`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setWebinars(data); // Set the fetched webinars
+      } catch (error) {
+        console.error('Failed to fetch webinars:', error);
+      } finally {
+        setLoading(false); // Set loading to false after fetching
+      }
+    };
+
+    fetchWebinars();
+  }, []);
+
+  // Filter participants based on the selected webinar and search term
   const filteredParticipants = selectedWebinar
     ? selectedWebinar.participants.filter(participant =>
-        participant.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        participant.enrollmentNo.toString().includes(searchTerm.toLowerCase()) || // ID is an integer, convert to string for comparison
         participant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         participant.email.toLowerCase().includes(searchTerm.toLowerCase())
       )
@@ -85,20 +62,24 @@ export function WebinarParticipants() {
     currentPage * ITEMS_PER_PAGE
   );
 
+  if (loading) {
+    return <div className="text-center">Loading webinars...</div>; // Loading message
+  }
+
   return (
     <div className="bg-primary_color2 rounded-lg text-black p-6">
       <h1 className="text-2xl font-bold mb-6">Webinar Participants</h1>
       {!selectedWebinar ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {webinars.map((webinar) => (
-            <Card key={webinar.id}>
+            <Card key={webinar._id}>
               <CardHeader>
                 <CardTitle>{webinar.name}</CardTitle>
               </CardHeader>
               <CardContent>
-                <img src={webinar.image} alt={webinar.name} className="w-full h-40 object-cover rounded-md mb-4" />
-                <p className="text-sm text-gray-600">ID: {webinar.id}</p>
-                <p className="text-sm text-gray-600">Date & Time: {webinar.dateTime}</p>
+                <img src={`http://localhost:5000${webinar.image}`} alt={webinar.name} className="w-full h-40 object-cover rounded-md mb-4" />
+                <p className="text-sm text-gray-600">ID: {webinar._id}</p> {/* Use _id for webinar ID */}
+                <p className="text-sm text-gray-600">Date & Time: {webinar.dateTime}</p> {/* Assuming dateTime exists in response */}
               </CardContent>
               <CardFooter>
                 <Button onClick={() => setSelectedWebinar(webinar)}>View Participants</Button>
@@ -127,15 +108,15 @@ export function WebinarParticipants() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Participant ID</TableHead>
+                <TableHead>Enrollment No</TableHead> {/* Changed to Enrollment No */}
                 <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {paginatedParticipants.map((participant) => (
-                <TableRow key={participant.id}>
-                  <TableCell>{participant.id}</TableCell>
+                <TableRow key={participant.enrollmentNo}> {/* Use enrollmentNo as the key */}
+                  <TableCell>{participant.enrollmentNo}</TableCell> {/* Display enrollmentNo */}
                   <TableCell>{participant.name}</TableCell>
                   <TableCell>{participant.email}</TableCell>
                 </TableRow>
@@ -175,3 +156,5 @@ export function WebinarParticipants() {
     </div>
   );
 }
+
+export default WebinarParticipants;

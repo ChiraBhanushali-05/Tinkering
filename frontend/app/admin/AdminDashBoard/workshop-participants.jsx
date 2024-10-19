@@ -1,7 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../../../components/ui/card";
 import { Button } from "../../../components/ui/button";
-import { Input } from "../../../components/ui/input";
 import {
   Table,
   TableBody,
@@ -22,75 +21,56 @@ import {
 const ITEMS_PER_PAGE = 5;
 
 export function WorkshopParticipants() {
-  const [bootcamps, setBootcamps] = useState([
-    {
-      id: "BC001",
-      name: "Web Development Fundamentals",
-      image: "/placeholder.svg?height=100&width=200",
-      dateTime: "2023-07-15 09:00 AM",
-      participants: [
-        { id: "BC001-P001", name: "John Doe", email: "john@example.com" },
-        { id: "BC001-P002", name: "Jane Smith", email: "jane@example.com" },
-        { id: "BC001-P003", name: "Alice Johnson", email: "alice@example.com" },
-      ]
-    },
-    {
-      id: "BC002",
-      name: "Mobile App Development",
-      image: "/placeholder.svg?height=100&width=200",
-      dateTime: "2023-08-01 10:00 AM",
-      participants: [
-        { id: "BC002-P001", name: "Bob Williams", email: "bob@example.com" },
-        { id: "BC002-P002", name: "Charlie Brown", email: "charlie@example.com" },
-      ]
-    },
-    {
-      id: "BC003",
-      name: "Data Science Essentials",
-      image: "/placeholder.svg?height=100&width=200",
-      dateTime: "2023-08-15 09:30 AM",
-      participants: [
-        { id: "BC003-P001", name: "Diana Prince", email: "diana@example.com" },
-        { id: "BC003-P002", name: "Ethan Hunt", email: "ethan@example.com" },
-        { id: "BC003-P003", name: "Fiona Gallagher", email: "fiona@example.com" },
-      ]
-    },
-  ]);
-
-  const [selectedBootcamp, setSelectedBootcamp] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [workshops, setWorkshops] = useState([]);
+  const [selectedWorkshop, setSelectedWorkshop] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const filteredParticipants = selectedBootcamp
-    ? selectedBootcamp.participants.filter(participant =>
-        participant.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        participant.name.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+  useEffect(() => {
+    const fetchWorkshops = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/workshops/with-participants`);
+        const data = await response.json();
+        setWorkshops(data);
+      } catch (error) {
+        console.error('Error fetching workshops:', error);
+      }
+    };
+
+    fetchWorkshops();
+  }, []);
+
+  // Get participants from the selected workshop
+  const allParticipants = selectedWorkshop?.participants
+    ? Array.isArray(selectedWorkshop.participants)
+      ? selectedWorkshop.participants
+      : [selectedWorkshop.participants] // Wrap single participant in an array
     : [];
 
-  const totalPages = Math.ceil(filteredParticipants.length / ITEMS_PER_PAGE);
-  const paginatedParticipants = filteredParticipants.slice(
+
+  const totalPages = Math.ceil(allParticipants.length / ITEMS_PER_PAGE);
+  const paginatedParticipants = allParticipants.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
 
   return (
     <div className="bg-primary_color2 rounded-lg text-black p-6">
-      <h1 className="text-2xl font-bold mb-6">WorkShop Participants</h1>
-      {!selectedBootcamp ? (
+      <h1 className="text-2xl font-bold mb-6">Workshop Participants</h1>
+      {!selectedWorkshop ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {bootcamps.map((bootcamp) => (
-            <Card key={bootcamp.id}>
+          {workshops.map((workshop) => (
+            <Card key={workshop._id}>
               <CardHeader>
-                <CardTitle>{bootcamp.name}</CardTitle>
+                <CardTitle>{workshop.title}</CardTitle>
               </CardHeader>
               <CardContent>
-                <img src={bootcamp.image} alt={bootcamp.name} className="w-full h-40 object-cover rounded-md mb-4" />
-                <p className="text-sm text-gray-600">ID: {bootcamp.id}</p>
-                <p className="text-sm text-gray-600">Date & Time: {bootcamp.dateTime}</p>
+                <p className="text-sm text-gray-600">Conductor: {workshop.conductor}</p>
+                <p className="text-sm text-gray-600">Date: {new Date(workshop.date).toLocaleString()}</p>
+                <p className="text-sm text-gray-600">Registration Deadline: {new Date(workshop.registrationDeadline).toLocaleString()}</p>
+                <p className="text-sm text-gray-600">Participants Count: {workshop.participants?.length || 0}</p>
               </CardContent>
               <CardFooter>
-                <Button onClick={() => setSelectedBootcamp(bootcamp)}>View Participants</Button>
+                <Button onClick={() => setSelectedWorkshop(workshop)}>View Participants</Button>
               </CardFooter>
             </Card>
           ))}
@@ -98,37 +78,27 @@ export function WorkshopParticipants() {
       ) : (
         <div>
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold">{selectedBootcamp.name} - Participants</h2>
-            <Button variant="outline" onClick={() => setSelectedBootcamp(null)}>Back to Bootcamps</Button>
-          </div>
-          <div className="mb-4">
-            <Input
-              type="text"
-              placeholder="Search by Participant ID or Name"
-              value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                setCurrentPage(1);
-              }}
-              className="max-w-sm"
-            />
+            <h2 className="text-xl font-semibold">{selectedWorkshop.title} - Participants</h2>
+            <Button variant="outline" onClick={() => setSelectedWorkshop(null)}>Back to Workshops</Button>
           </div>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Participant ID</TableHead>
+                <TableHead>Enrollment No</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {paginatedParticipants.map((participant) => (
-                <TableRow key={participant.id}>
-                  <TableCell>{participant.id}</TableCell>
-                  <TableCell>{participant.name}</TableCell>
-                  <TableCell>{participant.email}</TableCell>
-                </TableRow>
-              ))}
+              {paginatedParticipants.map((participant) => {
+                return (
+                  <TableRow key={participant.enrollmentNo}>
+                    <TableCell>{participant.enrollmentNo}</TableCell>
+                    <TableCell>{participant.name}</TableCell>
+                    <TableCell>{participant.email}</TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
           {totalPages > 1 && (

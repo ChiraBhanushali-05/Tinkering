@@ -67,7 +67,43 @@ router.get('/', async (req, res) => {
     res.status(500).json({ error: 'Error fetching webinars', details: error.message });
   }
 });
+router.get('/with-participants', async (req, res) => {
+  try {
+    const webinars = await Webinar.aggregate([
+      {
+        $lookup: {
+          from: 'users', // The name of the users collection
+          localField: 'registeredUsers.userId', // The field in the webinars collection
+          foreignField: 'enrollmentNo', // The field in the users collection to match
+          as: 'participants', // The name of the new field to add to the output
+        },
+      },
+      {
+        $project: {
+          _id: 1, // Include the webinar ID
+          name: 1, // Include the webinar name
+          image: 1, // Include the webinar image
+          dateTime: 1, // Include the webinar dateTime
+          participants: {
+            $map: {
+              input: '$participants', // The array of matched participants
+              as: 'participant',
+              in: {
+                enrollmentNo: '$$participant.enrollmentNo', // Participant enrollment number
+                name: '$$participant.name', // Participant name
+                email: '$$participant.email', // Participant email
+              },
+            },
+          },
+        },
+      },
+    ]);
 
+    res.status(200).json(webinars);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching webinars with participants', details: error.message });
+  }
+});
 // Update a webinar
 router.put('/:id', async (req, res) => {
   try {

@@ -90,5 +90,49 @@ router.get('/', async (req, res) => {
     res.status(500).json({ message: 'Error fetching workshops', error: error.message });
   }
 });
+// GET /api/workshops/with-participants - Fetch workshops with participants
+router.get('/with-participants', async (req, res) => {
+  try {
+    const workshops = await Workshop.aggregate([
+      {
+        $lookup: {
+          from: 'users', // Name of the users collection
+          localField: 'registeredUsers.enrollmentNo', // Field in workshops to match
+          foreignField: 'enrollmentNo', // Field in users to match
+          as: 'participants' // Output array field
+        }
+      },
+      {
+        $unwind: { // Deconstructs the participants array for easier access
+          path: '$participants',
+          preserveNullAndEmptyArrays: true // Keeps workshops without participants in the result
+        }
+      },
+      {
+        $project: {
+          _id: 1, // Workshop ID
+          title: 1, // Workshop title
+          conductor: 1, // Workshop conductor
+          date: 1, // Workshop date
+          registrationDeadline: 1, // Registration deadline
+          participants: {
+            enrollmentNo: '$participants.enrollmentNo', // Participant enrollment number
+            name: '$participants.name', // Participant name
+            email: '$participants.email' // Participant email
+          }
+        }
+      }
+    ]);
+
+    // Send the workshops data as the response
+    res.status(200).json(workshops);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+// Export the router
+
 
 module.exports = router;
