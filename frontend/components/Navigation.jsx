@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Menu } from "lucide-react";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import BlurIn from "../components/magicui/blur-in";
 import SheetDemo from "../components/SheetDemo";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
@@ -45,9 +46,12 @@ export function ExampleNavbarThree() {
   useEffect(() => {
     const fetchUserSession = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/session`, {
-          credentials: "include",
-        });
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/auth/session`,
+          {
+            credentials: "include",
+          }
+        );
         const data = await response.json();
         if (data.user) {
           setUser(data.user);
@@ -95,19 +99,22 @@ export function ExampleNavbarThree() {
     }
   
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/user`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          institute: selectedInstitute,
-          department: selectedDepartment,
-          phoneNumber,
-        }),
-      });
-  
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/user`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            institute: selectedInstitute,
+            department: selectedDepartment,
+            phoneNumber,
+          }),
+        }
+      );
+
       if (response.ok) {
         alert("Details saved successfully!");
         // Update profile completion status
@@ -140,21 +147,20 @@ export function ExampleNavbarThree() {
           <div className="mx-auto flex max-w-7xl flex-col items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
             <div className="flex w-full items-center justify-between">
               <div className="inline-flex items-center space-x-2">
-                <BlurIn word="Tinkering Hub" className="font-bold text-black dark:text-white" />
+                <Link href="/">
+                  <BlurIn word="Tinkering Hub" className="font-bold text-black dark:text-white" />
+                </Link>
                 <span className="w-40">
                   <img src="/images/logo1.png" alt="Tinkering Hub Logo" />
                 </span>
               </div>
               <div className="flex grow justify-end mr-2 hidden lg:flex">
-                <input
-                  className="flex h-10 w-[180px] text-black rounded-md bg-gray-100 px-3 py-2 text-sm placeholder:text-gray-600"
-                  type="text"
-                  placeholder="Search"
-                />
-                <button className="bg-black text-white rounded-lg w-32 ml-3">Search</button>
+                
                 {!user && (
                   <button
-                    onClick={() => (window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/auth/google`)}
+                    onClick={() =>
+                      (window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/auth/google`)
+                    }
                     className="ml-4 rounded-md bg-transparent px-3 py-2 text-sm font-semibold text-black hover:bg-black/10"
                   >
                     Login with Google
@@ -164,7 +170,11 @@ export function ExampleNavbarThree() {
   
               {/* Avatar visible on all screen sizes */}
               {user && (
-                <Drawer open={isProfileOpen} onOpenChange={setIsProfileOpen} side="right">
+                <Drawer
+                  open={isProfileOpen}
+                  onOpenChange={setIsProfileOpen}
+                  side="right"
+                >
                   <DrawerTrigger asChild>
                     <Button
                       variant="ghost"
@@ -172,7 +182,10 @@ export function ExampleNavbarThree() {
                       onClick={toggleProfile}
                     >
                       <Avatar className="h-12 w-12 bg-black">
-                        <AvatarImage src={user.image || "/placeholder-avatar.jpg"} alt={user.name} />
+                        <AvatarImage
+                          src={user.image || "/placeholder-avatar.jpg"}
+                          alt={user.name}
+                        />
                         <AvatarFallback>{getInitials(user.email)}</AvatarFallback>
                       </Avatar>
                     </Button>
@@ -180,74 +193,84 @@ export function ExampleNavbarThree() {
                   <DrawerContent className="h-full w-[400px] shadow-lg rounded-r-lg bg-primary_color2">
                     <div className="flex flex-col h-full overflow-y-auto">
                       <DrawerHeader className="text-left">
-                        <DrawerTitle className='text-black'>User Profile</DrawerTitle>
-                        <DrawerDescription className='text-black'>Manage your account settings</DrawerDescription>
+                        <DrawerTitle className="text-black">User Profile</DrawerTitle>
+                        <DrawerDescription className="text-black">
+                          Manage your account settings
+                        </DrawerDescription>
                       </DrawerHeader>
                       <div className="flex-grow p-4 space-y-6">
                         <div className="flex items-center space-x-4">
                           <Avatar className="h-24 w-24 ">
-                            <AvatarImage src={user.image || "/placeholder-avatar.jpg"} alt={user.name} />
+                            <AvatarImage
+                              src={user.image || "/placeholder-avatar.jpg"}
+                              alt={user.name}
+                            />
                             <AvatarFallback>{getInitials(user.email)}</AvatarFallback>
                           </Avatar>
                           <div>
-                            <Label className="text-lg text-black font-semibold">{user.name}</Label>
-                            <p className="text-sm text-muted-foreground text-black">{userRole}</p>
+                            <Label className="text-lg text-black font-semibold">
+                              {user.name}
+                            </Label>
+                            <p className="text-sm text-muted-foreground text-black">
+                              {userRole}
+                            </p>
                           </div>
                         </div>
-  
-                        {/* Conditional rendering based on profile completion */}
-                        {!isProfileCompleted ? (
-                          <div className="space-y-4">
-                            {/* Input fields for institute, department, and phone number */}
-                            <div className="space-y-2">
-                              <Label htmlFor="institute" className='text-black'>Institute</Label>
-                              <Select onValueChange={setSelectedInstitute} value={selectedInstitute}>
-                                <SelectTrigger id="institute">
-                                  <SelectValue placeholder="Select Institute" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {institutes.map((institute, index) => (
-                                    <SelectItem key={index} value={institute}>
-                                      {institute}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            <div className="space-y-2">
-                              <Label htmlFor="department" className='text-black'>Department</Label>
-                              <Select onValueChange={setSelectedDepartment} value={selectedDepartment}>
-                                <SelectTrigger id="department">
-                                  <SelectValue placeholder="Select Department" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {departments.map((department, index) => (
-                                    <SelectItem key={index} value={department}>
-                                      {department}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            <div className="space-y-2">
-                              <Label htmlFor="phone" className='text-black'>Phone Number</Label>
-                              <Input
-                                id="phone"
-                                type="tel"
-                                placeholder="Enter your phone number"
-                                value={phoneNumber}
-                                onChange={(e) => setPhoneNumber(e.target.value)}
-                              />
-                            </div>
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="institute" className="text-black">
+                              Institute
+                            </Label>
+                            <Select
+                              onValueChange={setSelectedInstitute}
+                              value={selectedInstitute}
+                            >
+                              <SelectTrigger id="institute">
+                                <SelectValue placeholder="Select Institute" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {institutes.map((institute, index) => (
+                                  <SelectItem key={index} value={institute}>
+                                    {institute}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
                           </div>
                         ) : (
                           <div className="space-y-2">
-                            <h3 className='text-black font-semibold'>Profile Details</h3>
-                            <p className='text-black'>Institute: {selectedInstitute}</p>
-                            <p className='text-black'>Department: {selectedDepartment}</p>
-                            <p className='text-black'>Phone Number: {phoneNumber}</p>
+                            <Label htmlFor="department" className="text-black">
+                              Department
+                            </Label>
+                            <Select
+                              onValueChange={setSelectedDepartment}
+                              value={selectedDepartment}
+                            >
+                              <SelectTrigger id="department">
+                                <SelectValue placeholder="Select Department" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {departments.map((department, index) => (
+                                  <SelectItem key={index} value={department}>
+                                    {department}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
                           </div>
-                        )}
+                          <div className="space-y-2">
+                            <Label htmlFor="phone" className="text-black">
+                              Phone Number
+                            </Label>
+                            <Input
+                              id="phone"
+                              type="tel"
+                              placeholder="Enter your phone number"
+                              value={phoneNumber}
+                              onChange={(e) => setPhoneNumber(e.target.value)}
+                            />
+                          </div>
+                        </div>
                       </div>
                       <DrawerFooter>
                         {/* Conditionally render the Save Changes button based on profile completion */}
@@ -266,9 +289,13 @@ export function ExampleNavbarThree() {
                 </Drawer>
               )}
   
+
               {/* Menu Button for Small Screens */}
               <div className="flex lg:hidden">
-                <button onClick={toggleMenu} className="rounded-lg bg-black p-2 text-white hover:bg-gray-700">
+                <button
+                  onClick={toggleMenu}
+                  className="rounded-lg bg-black p-2 text-white hover:bg-gray-700"
+                >
                   <Menu className="h-6 w-6" aria-hidden="true" />
                 </button>
               </div>

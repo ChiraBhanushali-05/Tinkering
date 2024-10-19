@@ -13,17 +13,18 @@ export const Faq = () => {
     {
       question: 'What is Tinkering Hub?',
       answer:
-        'Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aliquam adipisci iusto aperiam? Sint asperiores sequi nobis inventore ratione deleniti?',
+        'Tinkering Hub is working on creating environment to work for Emerging Areas of Industry 4.0, which leads toward Bionic Organization.'
+,
     },
     {
       question: 'What did Tinkering Hub do?',
       answer:
-        'Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aliquam adipisci iusto aperiam? Sint asperiores sequi nobis inventore ratione deleniti?',
+        'Develop technical skills of students on demanding cutting edge thrust area technologies.'
     },
     {
       question: 'How can I join Tinkering Hub?',
       answer:
-        'Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aliquam adipisci iusto aperiam? Sint asperiores sequi nobis inventore ratione deleniti?',
+        'Apply through the Internship option through the website',
     },
   ];
 
@@ -62,11 +63,16 @@ export const Faq = () => {
           ))}
         </div>
         <p className="textbase mt-6 text-center text-gray-600">
-          Can&apos;t find what you&apos;re looking for?{' '}
-          <a href="#" title="" className="font-semibold text-black hover:underline">
-            Contact our support
-          </a>
-        </p>
+  Can&apos;t find what you&apos;re looking for?{' '}
+  <a 
+    href="mailto:tinkeringhub@paruluniversity.ac.in" 
+    title="Contact Support" 
+    className="font-semibold text-black hover:underline"
+  >
+    Contact our support
+  </a>
+</p>
+
       </div>
     </section>
   );

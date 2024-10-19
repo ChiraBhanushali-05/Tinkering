@@ -11,7 +11,7 @@ const dropdowns = [
     items: [
       { label: 'Upcoming Webinar', href: '/UpcomingWebinar' },
       // { label: 'Upcoming Expression', href: '/UpcomingExpression' },
-      { label: 'Past Webinar', href: '/PastWebinar' },
+      
       // { label: 'Past Expression', href: '/PastExpression' },
     ],
   },
