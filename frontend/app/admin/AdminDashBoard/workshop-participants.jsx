@@ -21,7 +21,7 @@ import {
 
 const ITEMS_PER_PAGE = 5;
 
-export function BootcampParticipants() {
+export function WorkshopParticipants() {
   const [bootcamps, setBootcamps] = useState([
     {
       id: "BC001",
@@ -76,7 +76,7 @@ export function BootcampParticipants() {
 
   return (
     <div className="bg-primary_color2 rounded-lg text-black p-6">
-      <h1 className="text-2xl font-bold mb-6">Bootcamp Participants</h1>
+      <h1 className="text-2xl font-bold mb-6">WorkShop Participants</h1>
       {!selectedBootcamp ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {bootcamps.map((bootcamp) => (

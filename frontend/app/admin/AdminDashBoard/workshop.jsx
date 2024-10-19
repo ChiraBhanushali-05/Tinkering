@@ -2,21 +2,21 @@
 
 import { useState } from 'react'
 import { Button } from "../../../components/ui/button"
-import { BootcampUpload } from './bootcamp-upload'
-import { PastBootcamps } from './past-bootcamps'
-import { BootcampParticipants } from './bootcamp-participants'
+import {  WorkshopParticipants } from './workshop-participants'
+import { WorkshopUpload } from './workshop-upload'
+import { PastWorkshops } from './past-workshops'
 
-export function Bootcamps() {
+export function Workshop() {
   const [activeTab, setActiveTab] = useState('upcoming')
 
   const renderContent = () => {
     switch (activeTab) {
       case 'upcoming':
-        return <BootcampUpload />
+        return <WorkshopUpload />
       case 'past':
-        return <PastBootcamps />
+        return <PastWorkshops />
       case 'participants':
-        return <BootcampParticipants />
+        return <WorkshopParticipants />
       default:
         return <div>Select a tab</div>
     }
@@ -31,21 +31,21 @@ export function Bootcamps() {
           variant={activeTab === 'upcoming' ? 'default' : 'ghost'}
           onClick={() => setActiveTab('upcoming')}
         >
-          Upload Upcoming Bootcamps
+          Upload Upcoming WorkShops
         </Button>
         <Button
           className={`w-full sm:w-auto m-2 sm:m-0 ${activeTab === 'past' ? 'font-bold' : ''}`}
           variant={activeTab === 'past' ? 'default' : 'ghost'}
           onClick={() => setActiveTab('past')}
         >
-          Upload Past Bootcamps
+          Upload Past WorkShops
         </Button>
         <Button
           className={`w-full sm:w-auto m-2 sm:m-0 ${activeTab === 'participants' ? 'font-bold' : ''}`}
           variant={activeTab === 'participants' ? 'default' : 'ghost'}
           onClick={() => setActiveTab('participants')}
         >
-          Bootcamp Participants
+        WorkShop Participants
         </Button>
       </div>
 

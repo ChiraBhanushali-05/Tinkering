@@ -15,15 +15,15 @@ import { CalendarIcon } from "lucide-react"
 import { format } from "date-fns"
 import { cn } from "../../../lib/utils"
 
-export function BootcampUpload() {
+export function WorkshopUpload() {
   const [date, setDate] = useState()
 
   return (
     <div className="max-w-2xl mx-auto text-black">
-      <h2 className="text-2xl font-bold mb-4">Upload Upcoming Bootcamp</h2>
+      <h2 className="text-2xl font-bold mb-4">Upload Upcoming WorkShops</h2>
       <form className="space-y-4">
         <div>
-          <Label htmlFor="bootcampName">Bootcamp Name</Label>
+          <Label htmlFor="bootcampName">Workshop Name</Label>
           <Input id="bootcampName" placeholder="Enter bootcamp name" />
         </div>
         <div>
@@ -59,7 +59,7 @@ export function BootcampUpload() {
           <Label htmlFor="description">Description</Label>
           <Textarea id="description" placeholder="Enter bootcamp description" />
         </div>
-        <Button type="submit">Upload Bootcamp</Button>
+        <Button type="submit">Upload WorkShop</Button>
       </form>
     </div>
   )

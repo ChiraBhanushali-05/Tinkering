@@ -3,7 +3,9 @@
 import { Button } from "../../components/ui/button"
 
 // No need to use TypeScript type annotations in JSX
-export const columns = [
+// columns.jsx
+
+export const getColumns = (handleBookClick) => [
   {
     accessorKey: "srno",
     header: "SrNo",
@@ -18,13 +20,12 @@ export const columns = [
   },
   {
     id: "actions",
+    header: "Book The BootCamp",
     cell: ({ row }) => {
-      const payment = row.original;
-
       return (
-        <Button variant="outline" onClick={() => openDocument(payment.url)}>Book</Button>
+        <Button onClick={() => handleBookClick(row.original)}>Book</Button>
       );
     },
-    header: "Book The BootCamp",
   },
-]
+];
+

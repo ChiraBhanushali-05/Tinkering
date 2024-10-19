@@ -97,6 +97,9 @@ function WebinarCard({ title, presenter, date, description, imageSrc, onRegister
   );
 }
 
+
+
+
 export default function WebinarCards() {
   const [webinars, setWebinars] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -215,3 +218,4 @@ export default function WebinarCards() {
     </main>
   );
 }
+git
