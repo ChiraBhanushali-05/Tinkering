@@ -149,6 +149,9 @@
             <div className="mx-auto flex max-w-7xl flex-col items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
               <div className="flex w-full items-center justify-between">
                 <div className="inline-flex items-center space-x-2">
+                <span className="w-14">
+                    <img src="/images/th.png" alt="Tinkering Hub Logo" />
+                  </span>
                   <Link href="/">
                     <BlurIn word="Tinkering Hub" className="font-bold text-black dark:text-white" />
                   </Link>

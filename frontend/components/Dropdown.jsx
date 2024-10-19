@@ -19,7 +19,7 @@ const dropdowns = [
     buttonLabel: 'Workshops',
     items: [
       { label: 'Upcoming Workshop', href: '/UpcomingWorkshop' },
-      { label: 'Past Workshops Videos', href: '/PastWorkshopsVideos' },
+      // { label: 'Past Workshops Videos', href: '/PastWorkshopsVideos' },
     ],
   },
   {
