@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
   // Fields that are completed after login
   institution: { type: String }, 
   department: { type: String },
-  phone: { type: String },
+  phone: { type:Number },
 
   // Registered webinars (array of references to Webinar)
   registeredWebinars: [

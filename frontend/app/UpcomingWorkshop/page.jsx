@@ -1,58 +1,100 @@
-'use client'
+"use client";
 
-import React, { useState, useEffect } from "react"
-import { getColumns } from "./columns"
-import { DataTable } from "./data-table"
-import { ExampleNavbarThree } from "../../components/Navigation"
-import { Button } from "../../components/ui/button"
-import { Input } from "../../components/ui/input"
-import { Label } from "../../components/ui/label"
-import { X } from "lucide-react"
+import React, { useState, useEffect } from "react";
+import { getColumns } from "./columns";
+import { DataTable } from "./data-table";
+import { ExampleNavbarThree } from "../../components/Navigation";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
+import { X } from "lucide-react";
 
+// Function to fetch user data
+async function getUserData() {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/session`, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch user data");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    return { name: '', enrollmentNumber: '', whatsappNumber: '' };
+  }
+}
+
+// Function to fetch workshop data
 async function getData() {
-  // Fetch data from your API here.
-  return [
-    {
-      id: "728ed52f",
-      srno: 101,
-      date: '01/08/2024',
-      name: "Machine Learning"
-    },
-    // ... (other data entries)
-  ]
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/workshops`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch workshops");
+    }
+    
+    const workshops = await response.json();
+    const formattedWorkshops = workshops.map((workshop) => {
+      const date = new Date(workshop.date); // Assuming `workshop.date` contains the timestamp
+      const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+
+      return {
+        ...workshop,
+        date: formattedDate,
+      };
+    });
+
+    return formattedWorkshops;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
 }
 
 export default function DemoPage() {
-  const [data, setData] = useState([])
-  const [isPopupOpen, setIsPopupOpen] = useState(false)
-  const [selectedRow, setSelectedRow] = useState(null)
+  const [data, setData] = useState([]); // State for holding fetched workshop data
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [userDetails, setUserDetails] = useState({
+    name: '',
+    enrollmentNumber: '',
+    whatsappNumber: '',
+  });
 
   useEffect(() => {
     async function fetchData() {
-      const result = await getData()
-      setData(result)
+      const result = await getData();
+      setData(result);
     }
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
 
-  const handleBookClick = (row) => {
-    setSelectedRow(row)
-    setIsPopupOpen(true)
-  }
+  const handleBookClick = async (row) => {
+    const userData = await getUserData();
+    setSelectedRow(row);
+    setIsPopupOpen(true);
+    setUserDetails({
+      name: userData.name || '',
+      enrollmentNumber: userData.enrollmentNumber || '',
+      whatsappNumber: userData.whatsappNumber || '',
+    });
+  };
 
   const handleClosePopup = () => {
-    setIsPopupOpen(false)
-    setSelectedRow(null)
-  }
+    setIsPopupOpen(false);
+    setSelectedRow(null);
+  };
 
   const handleBookSubmit = (e) => {
-    e.preventDefault()
-    // Here you would typically send this data to your backend
-    console.log("Booking submitted for", selectedRow)
-    setIsPopupOpen(false)
-  }
+    e.preventDefault();
+    console.log("Booking submitted for", selectedRow);
+    setIsPopupOpen(false);
+  };
 
-  const columnsWithAction = getColumns(handleBookClick)
+  const columnsWithAction = getColumns(handleBookClick);
 
   return (
     <main className="flex min-h-screen flex-col items-center p-8 justify-between bg-primary_color1">
@@ -77,15 +119,33 @@ export default function DemoPage() {
             <form onSubmit={handleBookSubmit} className="space-y-4">
               <div>
                 <Label className="text-black" htmlFor="name">Name</Label>
-                <Input id="name" placeholder="Enter your name" required />
+                <Input 
+                  id="name" 
+                  placeholder="Enter your name" 
+                  value={userDetails.name}
+                  onChange={(e) => setUserDetails({ ...userDetails, name: e.target.value })} 
+                  required 
+                />
               </div>
               <div>
-                <Label  className="text-black" htmlFor="enrollmentNumber">Enrollment Number</Label>
-                <Input id="enrollmentNumber" placeholder="Enter your enrollment number" required />
+                <Label className="text-black" htmlFor="enrollmentNumber">Enrollment Number</Label>
+                <Input 
+                  id="enrollmentNumber" 
+                  placeholder="Enter your enrollment number" 
+                  value={userDetails.enrollmentNumber} 
+                  onChange={(e) => setUserDetails({ ...userDetails, enrollmentNumber: e.target.value })} 
+                  required 
+                />
               </div>
               <div>
-                <Label  className="text-black" htmlFor="whatsappNumber">WhatsApp Number</Label>
-                <Input id="whatsappNumber" placeholder="Enter your WhatsApp number" required />
+                <Label className="text-black" htmlFor="whatsappNumber">WhatsApp Number</Label>
+                <Input 
+                  id="whatsappNumber" 
+                  placeholder="Enter your WhatsApp number" 
+                  value={userDetails.whatsappNumber} 
+                  onChange={(e) => setUserDetails({ ...userDetails, whatsappNumber: e.target.value })} 
+                  required 
+                />
               </div>
               <Button type="submit" className="w-full">Book</Button>
             </form>
@@ -93,5 +153,6 @@ export default function DemoPage() {
         </div>
       )}
     </main>
-  )
+  );
 }
+  

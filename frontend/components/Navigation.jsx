@@ -40,6 +40,7 @@ export function ExampleNavbarThree() {
   const [selectedDepartment, setSelectedDepartment] = useState("");
   const [userRole, setUserRole] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [isProfileCompleted, setIsProfileCompleted] = useState(false); // New state variable
 
   useEffect(() => {
     const fetchUserSession = async () => {
@@ -51,6 +52,15 @@ export function ExampleNavbarThree() {
         if (data.user) {
           setUser(data.user);
           setUserRole(data.user.role || "No role assigned");
+  
+          // Check if the user's profile is completed
+          const isCompleted = data.user.institute && data.user.department && data.user.phoneNumber;
+          setIsProfileCompleted(isCompleted);
+          
+          // Set state with user details
+          setSelectedInstitute(data.user.institute || "");
+          setSelectedDepartment(data.user.department || "");
+          setPhoneNumber(data.user.phoneNumber || "");
         } else {
           setUser(null);
         }
@@ -58,10 +68,11 @@ export function ExampleNavbarThree() {
         console.error("Error fetching user session:", error);
       }
     };
-
+  
     fetchUserSession();
   }, []);
-
+  
+  
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleProfile = () => setIsProfileOpen(!isProfileOpen);
 
@@ -82,7 +93,7 @@ export function ExampleNavbarThree() {
       alert("Please select both an institute and a department.");
       return;
     }
-
+  
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/user`, {
         method: "POST",
@@ -96,9 +107,11 @@ export function ExampleNavbarThree() {
           phoneNumber,
         }),
       });
-
+  
       if (response.ok) {
         alert("Details saved successfully!");
+        // Update profile completion status
+        setIsProfileCompleted(true); // Mark profile as completed
         setIsProfileOpen(false);
       } else {
         const errorData = await response.json();
@@ -109,6 +122,7 @@ export function ExampleNavbarThree() {
       alert("Failed to save details. Please try again.");
     }
   };
+  
 
   const handleLogout = () => {
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`;
@@ -147,7 +161,7 @@ export function ExampleNavbarThree() {
                   </button>
                 )}
               </div>
-
+  
               {/* Avatar visible on all screen sizes */}
               {user && (
                 <Drawer open={isProfileOpen} onOpenChange={setIsProfileOpen} side="right">
@@ -180,51 +194,66 @@ export function ExampleNavbarThree() {
                             <p className="text-sm text-muted-foreground text-black">{userRole}</p>
                           </div>
                         </div>
-                        <div className="space-y-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="institute" className='text-black'>Institute</Label>
-                            <Select onValueChange={setSelectedInstitute} value={selectedInstitute}>
-                              <SelectTrigger id="institute">
-                                <SelectValue placeholder="Select Institute" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {institutes.map((institute, index) => (
-                                  <SelectItem key={index} value={institute}>
-                                    {institute}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
+  
+                        {/* Conditional rendering based on profile completion */}
+                        {!isProfileCompleted ? (
+                          <div className="space-y-4">
+                            {/* Input fields for institute, department, and phone number */}
+                            <div className="space-y-2">
+                              <Label htmlFor="institute" className='text-black'>Institute</Label>
+                              <Select onValueChange={setSelectedInstitute} value={selectedInstitute}>
+                                <SelectTrigger id="institute">
+                                  <SelectValue placeholder="Select Institute" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {institutes.map((institute, index) => (
+                                    <SelectItem key={index} value={institute}>
+                                      {institute}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="department" className='text-black'>Department</Label>
+                              <Select onValueChange={setSelectedDepartment} value={selectedDepartment}>
+                                <SelectTrigger id="department">
+                                  <SelectValue placeholder="Select Department" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {departments.map((department, index) => (
+                                    <SelectItem key={index} value={department}>
+                                      {department}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="phone" className='text-black'>Phone Number</Label>
+                              <Input
+                                id="phone"
+                                type="tel"
+                                placeholder="Enter your phone number"
+                                value={phoneNumber}
+                                onChange={(e) => setPhoneNumber(e.target.value)}
+                              />
+                            </div>
                           </div>
+                        ) : (
                           <div className="space-y-2">
-                            <Label htmlFor="department" className='text-black'>Department</Label>
-                            <Select onValueChange={setSelectedDepartment} value={selectedDepartment}>
-                              <SelectTrigger id="department">
-                                <SelectValue placeholder="Select Department" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {departments.map((department, index) => (
-                                  <SelectItem key={index} value={department}>
-                                    {department}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
+                            <h3 className='text-black font-semibold'>Profile Details</h3>
+                            <p className='text-black'>Institute: {selectedInstitute}</p>
+                            <p className='text-black'>Department: {selectedDepartment}</p>
+                            <p className='text-black'>Phone Number: {phoneNumber}</p>
                           </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="phone" className='text-black'>Phone Number</Label>
-                            <Input
-                              id="phone"
-                              type="tel"
-                              placeholder="Enter your phone number"
-                              value={phoneNumber}
-                              onChange={(e) => setPhoneNumber(e.target.value)}
-                            />
-                          </div>
-                        </div>
+                        )}
                       </div>
                       <DrawerFooter>
-                        <Button onClick={saveUserPreferences}>Save Changes</Button>
+                        {/* Conditionally render the Save Changes button based on profile completion */}
+                        {!isProfileCompleted && (
+                          <Button onClick={saveUserPreferences}>Save Changes</Button>
+                        )}
                         <Button variant="outline" onClick={handleLogout}>
                           Logout
                         </Button>
@@ -236,9 +265,7 @@ export function ExampleNavbarThree() {
                   </DrawerContent>
                 </Drawer>
               )}
-
-              
-
+  
               {/* Menu Button for Small Screens */}
               <div className="flex lg:hidden">
                 <button onClick={toggleMenu} className="rounded-lg bg-black p-2 text-white hover:bg-gray-700">
@@ -246,15 +273,16 @@ export function ExampleNavbarThree() {
                 </button>
               </div>
             </div>
-
+  
             {!isSmallScreen && <MultiDropdowns />}
           </div>
         </motion.div>
       </div>
-
+  
       <SheetDemo isOpen={isMenuOpen} onClose={toggleMenu} />
     </>
   );
+  
 }
 
 export default ExampleNavbarThree;

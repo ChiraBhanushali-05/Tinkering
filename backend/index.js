@@ -10,6 +10,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const { Strategy: GoogleStrategy } = require('passport-google-oauth20');
 const webinarRoutes = require("./routes/WeninarRoutes");
+const workshopRoutes = require('./routes/workshopRoutes');
 dotenv.config();
 const User = require('./models/User'); // MongoDB user model
 const registerRoutes = require('./routes/register'); 
@@ -123,16 +124,37 @@ app.get(
     }
   }
 );
+app.get('/api/auth/session', async (req, res) => {
+  try {
+    if (req.isAuthenticated()) {
+      // Assuming req.user is populated with user data
+      const { _id, name, email, role, institution, department, phone, registeredWebinars } = req.user;
 
-
-app.get('/api/auth/session', (req, res) => {
-  if (req.isAuthenticated()) {
-    res.json({ user: req.user });
-  } else {
-    res.json({ user: null });
+      // Return only the required user information including registeredWebinars
+      res.json({
+        user: {
+          id: _id,
+          name: name,
+          email: email,
+          institute: institution,
+          department: department,
+          phoneNumber: phone,
+          role: role,
+          registeredWebinars: registeredWebinars || [], // Ensure it's an array
+        },
+      });
+    } else {
+      // User is not authenticated
+      res.json({ user: null });
+    }
+  } catch (error) {
+    console.error('Error fetching user session:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 
+
+app.use('/api/workshops', workshopRoutes);
 app.get('/api/auth/logout', (req, res) => {
   req.logout(() => {
     req.session.destroy();
@@ -173,7 +195,7 @@ app.post('/api/auth/update-role', async (req, res) => {
 
 // Route to save institute and department
 app.post('/api/auth/user', async (req, res) => {
-  const { institute, department } = req.body; // Destructure from the request body
+  const { institute, department,phoneNumber } = req.body; // Destructure from the request body
 
   if (!req.isAuthenticated()) {
     return res.status(401).json({ message: 'User not authenticated' });
@@ -182,8 +204,9 @@ app.post('/api/auth/user', async (req, res) => {
   try {
     const user = await User.findById(req.user.id); // Find the user by ID
     if (user) {
-      user.institute = institute; // Update institute
+      user.institution = institute; // Update institute
       user.department = department; // Update department
+      user.phone=phoneNumber;
       await user.save(); // Save the updated user
       return res.status(200).json({ 
         message: 'User updated successfully', 
