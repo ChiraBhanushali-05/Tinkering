@@ -28,6 +28,7 @@ export function WorkshopUpload() {
 
     const workshopData = {
       title,
+      conductor,
       date,
       registrationDeadline,
       capacity: Number(capacity),
@@ -35,7 +36,7 @@ export function WorkshopUpload() {
     };
 
     try {
-      const response = await fetch("/api/workshops/upload", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/workshops/upload`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
