@@ -141,14 +141,7 @@ export function ExampleNavbarThree() {
                 </span>
               </div>
               <div className="flex grow justify-end mr-2 hidden lg:flex">
-                <input
-                  className="flex h-10 w-[180px] text-black rounded-md bg-gray-100 px-3 py-2 text-sm placeholder:text-gray-600"
-                  type="text"
-                  placeholder="Search"
-                />
-                <button className="bg-black text-white rounded-lg w-32 ml-3">
-                  Search
-                </button>
+                
                 {!user && (
                   <button
                     onClick={() =>

@@ -55,8 +55,8 @@ const activities = [
     items: ["Enhanced Collaboration", "Resource Optimization", "Focused Innovation"],
     itemColors: ["#D6BCFA", "#C4B5FD", "#A78BFA"], // Different background colors for list items
     images: [
-      { src: "/images/p8.jpg", alt: "Activity Image 1" },
-      { src: "/images/p8.jpg", alt: "Activity Image 2" },
+      { src: "/images/s1.jpg", alt: "Activity Image 1" },
+      { src: "/images/s2.jpg", alt: "Activity Image 2" },
     ],
     color: "#EDE9FE", // Card background color
   },
@@ -67,8 +67,8 @@ const activities = [
     items: ["Collaborative Ecosystem", "Innovation Support", "Resource Sharing"],
     itemColors: ["#FED7AA", "#FDBA74", "#FB923C"], // Different background colors for list items
     images: [
-      { src: "/images/p8.jpg", alt: "Activity Image 3" },
-      { src: "/images/p8.jpg", alt: "Activity Image 4" },
+      { src: "/images/m1.jpg", alt: "Activity Image 3" },
+      { src: "/images/m3.jpg", alt: "Activity Image 4" },
     ],
     color: "#FFF4E5", // Card background color
   },
@@ -79,8 +79,8 @@ const activities = [
     items: ["Strategic Guidance", "Mentorship Sessions", "Technical Support"],
     itemColors: ["#BBF7D0", "#86EFAC", "#4ADE80"], // Different background colors for list items
     images: [
-      { src: "/images/p8.jpg", alt: "Activity Image 5" },
-      { src: "/images/p8.jpg", alt: "Activity Image 6" },
+      { src: "/images/j3.jpg", alt: "Activity Image 5" },
+      { src: "/images/ji5.jpg", alt: "Activity Image 6" },
     ],
     color: "#ECFDF5", // Card background color
   },
@@ -91,8 +91,8 @@ const activities = [
     items: ["Integrated Technologies", "Collaborative Environment", "Research & Development"],
     itemColors: ["#FECACA", "#F87171", "#EF4444"], // Different background colors for list items
     images: [
-      { src: "/images/p8.jpg", alt: "Activity Image 7" },
-      { src: "/images/p8.jpg", alt: "Activity Image 8" },
+      { src: "/images/apple1.jpg", alt: "Activity Image 7" },
+      { src: "/images/apple2.jpg", alt: "Activity Image 8" },
     ],
     color: "#FEE2E2", // Card background color
   },

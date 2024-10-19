@@ -75,9 +75,9 @@ export default function DemoPage() {
             </button>
             <h2 className="text-2xl font-bold mb-4 text-black">Book Workshop</h2>
             <form onSubmit={handleBookSubmit} className="space-y-4">
-              <div>
+              <div >
                 <Label className="text-black" htmlFor="name">Name</Label>
-                <Input id="name" placeholder="Enter your name" required />
+                <Input className="text-black" id="name" placeholder="Enter your name" required />
               </div>
               <div>
                 <Label  className="text-black" htmlFor="enrollmentNumber">Enrollment Number</Label>

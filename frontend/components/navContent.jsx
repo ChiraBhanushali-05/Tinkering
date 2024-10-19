@@ -67,7 +67,7 @@ const sectionStyle = "flex flex-col md:flex-row justify-between items-start mt-1
 
 const TechSupportInternshipSection = () => (
   <div className={sectionStyle}>
-    <div className="flex-1 md:ml-8 text-black ">
+    <div className="flex-1 md:ml-8 text-black">
       <div>
         <p className="text-2xl md:text-3xl font-bold mb-2">Tech Support &</p>
         <p className="text-2xl md:text-3xl font-bold mb-2">Internship</p>
@@ -79,50 +79,59 @@ const TechSupportInternshipSection = () => (
       </h3>
     </div>
     <div className="flex-1 flex justify-center">
-      <IconCloudDemo />
-    </div>
+  {/* Replace the carousel with an image */}
+  <img
+    src="/images/intern1.jpg"
+    alt="Tech Support and Internship"
+    className="w-3/4 h-auto rounded-lg shadow-lg"
+  />
+</div>
+
   </div>
 );
 
-const MicrosoftCertificationSection = () => (
-  <div className={sectionStyle}>
-    <div className="flex-1 md:ml-8 text-black">
-      <div>
-        <p className="text-xl md:text-2xl font-bold mb-2">Microsoft Certification</p>
-        <p className="text-xl md:text-2xl font-bold mb-2">Courses</p>
-      </div>
-      <h3 className="text-black text-sm md:text-base">
-        Connect, collaborate, and innovate with like-minded individuals in our dynamic Tinkering Hub Communities. Share
-        ideas, solve challenges, and advance your skills in a supportive network.
-      </h3>
-    </div>
-    <div className="flex-1 flex justify-center relative">
-      <div className="relative w-[150px] h-[200px] md:w-[250px] md:h-[350px]">
-        <Image
-          src="/images/Certification.png"
-          alt="Certification"
-          width={350}
-          height={450}
-          className="absolute top-0 left-0 transform -translate-x-2 -translate-y-2 z-10"
-        />
-        <Image
-          src="/images/Certification.png"
-          alt="Certificate 2"
-          width={350}
-          height={450}
-          className="absolute top-0 left-0 transform translate-x-1 translate-y-1 z-20"
-        />
-        <Image
-          src="/images/Certification.png"
-          alt="Certificate 3"
-          width={350}
-          height={450}
-          className="absolute top-0 left-0 transform translate-x-4 translate-y-4 z-30"
-        />
-      </div>
-    </div>
-  </div>
-);
+
+
+
+// const MicrosoftCertificationSection = () => (
+//   <div className={sectionStyle}>
+//     <div className="flex-1 md:ml-8 text-black">
+//       <div>
+//         <p className="text-xl md:text-2xl font-bold mb-2">Microsoft Certification</p>
+//         <p className="text-xl md:text-2xl font-bold mb-2">Courses</p>
+//       </div>
+//       <h3 className="text-black text-sm md:text-base">
+//         Connect, collaborate, and innovate with like-minded individuals in our dynamic Tinkering Hub Communities. Share
+//         ideas, solve challenges, and advance your skills in a supportive network.
+//       </h3>
+//     </div>
+//     <div className="flex-1 flex justify-center relative">
+//       <div className="relative w-[150px] h-[200px] md:w-[250px] md:h-[350px]">
+//         <Image
+//           src="/images/Certification.png"
+//           alt="Certification"
+//           width={350}
+//           height={450}
+//           className="absolute top-0 left-0 transform -translate-x-2 -translate-y-2 z-10"
+//         />
+//         <Image
+//           src="/images/Certification.png"
+//           alt="Certificate 2"
+//           width={350}
+//           height={450}
+//           className="absolute top-0 left-0 transform translate-x-1 translate-y-1 z-20"
+//         />
+//         <Image
+//           src="/images/Certification.png"
+//           alt="Certificate 3"
+//           width={350}
+//           height={450}
+//           className="absolute top-0 left-0 transform translate-x-4 translate-y-4 z-30"
+//         />
+//       </div>
+//     </div>
+//   </div>
+// );
 
 const BenefitsToStudentsSection = () => (
   <div className={sectionStyle}>
@@ -151,7 +160,7 @@ const NavAndContentSection = () => {
         {[
           { id: 'tinkering', label: 'Tinkering Hub Communities' },
           { id: 'tech-support', label: 'Tech Support & Internship' },
-          { id: 'certification', label: 'Microsoft Certification Courses' },
+          
           { id: 'benefits', label: 'Benefits to Students' },
         ].map((section) => (
           <a
