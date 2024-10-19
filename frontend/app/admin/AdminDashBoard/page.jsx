@@ -1,4 +1,5 @@
 'use client'
+
 import { useState, useEffect } from 'react'
 import { BellIcon, MenuIcon } from 'lucide-react'
 import { Button } from "../../../components/ui/button"
@@ -12,13 +13,14 @@ import {
   DropdownMenuTrigger,
 } from "../../../components/ui/dropdown-menu"
 import { Sidebar } from './sidebar'
-import { Bootcamps } from './bootcamps'
+import { Workshop } from './workshop'
 import { Webinars } from './webinars'
 import { Internships } from './internships'
 import { LabBookings } from './lab-booking'
+import { PeachedProjects } from './peached-projects'
 
 export default function AdminDashboard() {
-  const [activeSection, setActiveSection] = useState('bootcamps')
+  const [activeSection, setActiveSection] = useState('workshop')
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
 
@@ -34,14 +36,16 @@ export default function AdminDashboard() {
 
   const renderContent = () => {
     switch (activeSection) {
-      case 'bootcamps':
-        return <Bootcamps />
+      case 'workshop':
+        return <Workshop />
       case 'webinars':
         return <Webinars />
       case 'internships':
         return <Internships />
       case 'labBookings':
         return <LabBookings />
+      case 'peachedProjects':
+        return <PeachedProjects />
       default:
         return <div>Select a section</div>
     }

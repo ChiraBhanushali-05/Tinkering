@@ -138,6 +138,14 @@ export function ExampleNavbarThree() {
                   placeholder="Search"
                 />
                 <button className="bg-black text-white rounded-lg w-32 ml-3">Search</button>
+                {!user && (
+                  <button
+                    onClick={() => (window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/auth/google`)}
+                    className="ml-4 rounded-md bg-transparent px-3 py-2 text-sm font-semibold text-black hover:bg-black/10"
+                  >
+                    Login with Google
+                  </button>
+                )}
               </div>
 
               {/* Avatar visible on all screen sizes */}
