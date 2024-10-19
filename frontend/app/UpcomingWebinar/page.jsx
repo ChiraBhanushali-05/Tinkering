@@ -3,6 +3,76 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
 import ExampleNavbarThree from "../../components/Navigation";
+function Toast({ message }) {
+  return (
+    <div className="fixed bottom-4 right-4 bg-green-500 text-white py-2 px-4 rounded shadow-lg">
+      {message}
+    </div>
+  );
+}
+function RegistrationForm({ onClose, onSubmit, user, webinarId }) {
+  const [whatsapp, setWhatsapp] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Call the API to register the user for the webinar
+    await onSubmit(whatsapp); // Pass the WhatsApp number to the submit handler
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+        <h2 className="text-lg font-bold mb-4">Register for Webinar</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block text-sm font-semibold mb-2">Name</label>
+            <input
+              type="text"
+              value={user?.name || ''}
+              className="w-full p-2 border border-gray-300 rounded"
+              disabled // Make the field non-editable
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-semibold mb-2">Email</label>
+            <input
+              type="email"
+              value={user?.email || ''}
+              className="w-full p-2 border border-gray-300 rounded"
+              disabled // Make the field non-editable
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-semibold mb-2">Enrollment Number</label>
+            <input
+              type="text"
+              value={user?.enrollmentNo || ''} // Display the enrollment number
+              className="w-full p-2 border border-gray-300 rounded"
+              disabled // Make the field non-editable
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-semibold mb-2">WhatsApp Number</label>
+            <input
+              type="text"
+              value={whatsapp}
+              onChange={(e) => setWhatsapp(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded"
+              required
+            />
+          </div>
+          <div className="flex justify-end">
+            <Button type="submit" className="bg-black text-white px-4 py-2 rounded">
+              Submit
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
 
 function WebinarCard({ title, presenter, date, description, imageSrc, onRegister }) {
   return (
@@ -121,7 +191,7 @@ export default function WebinarCards() {
               <WebinarCard
                 key={webinar._id}
                 title={webinar.webinarName}
-                presenter={webinar.conductor}
+                presenter={webinar.presenter}
                 date={webinar.date}
                 description={webinar.description}
                 // Use the image path from MongoDB here
