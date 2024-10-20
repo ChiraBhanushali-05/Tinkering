@@ -195,7 +195,7 @@ const NavAndContentSection = () => {
       )}
 
       {activeSection === 'tech-support' && <TechSupportInternshipSection />}
-      {activeSection === 'certification' && <MicrosoftCertificationSection />}
+      
       {activeSection === 'benefits' && <BenefitsToStudentsSection />}
     </>
   );
