@@ -2,6 +2,7 @@
 import { useMemo } from "react";
 import { useTheme } from "next-themes";
 import { Cloud } from "react-icon-cloud";
+import Image from "next/image"; // Import the Image component
 
 export const cloudProps = {
   containerProps: {
@@ -36,12 +37,12 @@ export default function IconCloud({ imageUrls = [] }) {
   const renderedImages = useMemo(() => {
     return imageUrls.map((url, index) => (
       <a key={index} href="#" onClick={(e) => e.preventDefault()}>
-        <img
+        <Image
           src={url}
           alt={`Custom icon ${index}`}
+          width={42} // Set the desired width
+          height={42} // Set the desired height
           style={{
-            width: 42,
-            height: 42,
             borderRadius: "50%",
             objectFit: "cover",
             padding: 5,

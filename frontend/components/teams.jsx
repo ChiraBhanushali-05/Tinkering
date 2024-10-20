@@ -1,11 +1,12 @@
 import React from 'react';
+import Image from 'next/image';
 
 const headingStyle = {
   fontSize: '2.8rem',
   fontWeight: 'bold',
   textAlign: 'center',
   marginTop: '8rem',
-  color:'black'
+  color: 'black',
 };
 
 const teamContainerStyle = {
@@ -22,14 +23,14 @@ const teamCardStyle = {
   textAlign: 'center',
   boxShadow: '0 4px 8px #faf089', // Pale yellow shadow
   marginBottom: '0.5rem',
-  overflow: 'hidden',  // Ensures the image doesn't overflow the card
+  overflow: 'hidden', // Ensures the image doesn't overflow the card
 };
 
 const teamImageStyle = {
   width: '100%',
-  height: '70%',  // Adjusted height to fit the increased card height
-  objectFit: 'cover',  // Ensures the image fills the entire card
-  borderRadius: '8px 8px 0 0',  // Round only the top corners
+  height: '70%', // Adjusted height to fit the increased card height
+  objectFit: 'cover', // Ensures the image fills the entire card
+  borderRadius: '8px 8px 0 0', // Round only the top corners
 };
 
 const descriptionStyle = {
@@ -52,7 +53,7 @@ const OurTeams = () => {
       <div style={teamContainerStyle}>
         <div>
           <div style={teamCardStyle}>
-            <img src="/images/pic1.png" alt="Team 1" style={teamImageStyle} />
+            <Image src="/images/pic1.png" alt="Team 1" style={teamImageStyle} width={200} height={140} />
           </div>
           <div style={descriptionStyle}>
             <span style={spanStyle}>DR. Harshal Shah</span>
@@ -61,7 +62,7 @@ const OurTeams = () => {
         </div>
         <div>
           <div style={teamCardStyle}>
-            <img src="/images/pic2.jpg" alt="Team 2" style={teamImageStyle} />
+            <Image src="/images/pic2.jpg" alt="Team 2" style={teamImageStyle} width={200} height={140} />
           </div>
           <div style={descriptionStyle}>
             <span style={spanStyle}>Mr. Bharat Tank</span>
@@ -70,7 +71,7 @@ const OurTeams = () => {
         </div>
         <div>
           <div style={teamCardStyle}>
-            <img src="/images/pic3.png" alt="Team 3" style={teamImageStyle} />
+            <Image src="/images/pic3.png" alt="Team 3" style={teamImageStyle} width={200} height={140} />
           </div>
           <div style={descriptionStyle}>
             <span style={spanStyle}>Dr. Umang Panchal</span>
@@ -82,7 +83,7 @@ const OurTeams = () => {
       <div style={teamContainerStyle}>
         <div>
           <div style={teamCardStyle}>
-            <img src="/images/pic4.jpg" alt="Team 4" style={teamImageStyle} />
+            <Image src="/images/pic4.jpg" alt="Team 4" style={teamImageStyle} width={200} height={140} />
           </div>
           <div style={descriptionStyle}>
             <span style={spanStyle}>Mr. Mohammad</span>
@@ -91,7 +92,7 @@ const OurTeams = () => {
         </div>
         <div>
           <div style={teamCardStyle}>
-            <img src="/images/pic5.png" alt="Team 5" style={teamImageStyle} />
+            <Image src="/images/pic5.png" alt="Team 5" style={teamImageStyle} width={200} height={140} />
           </div>
           <div style={descriptionStyle}>
             <span style={spanStyle}>Mr. Sheel Shah</span>
@@ -100,7 +101,7 @@ const OurTeams = () => {
         </div>
         <div>
           <div style={teamCardStyle}>
-            <img src="/images/pic6.jpg" alt="Team 6" style={teamImageStyle} />
+            <Image src="/images/pic6.jpg" alt="Team 6" style={teamImageStyle} width={200} height={140} />
           </div>
           <div style={descriptionStyle}>
             <span style={spanStyle}>Mr. Viraj Soni</span>

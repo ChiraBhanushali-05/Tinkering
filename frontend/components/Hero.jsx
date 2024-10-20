@@ -1,6 +1,7 @@
-'use client'
+'use client';
 import React from 'react';
 import { motion } from "framer-motion";
+import Image from 'next/image'; // Import Image from next/image
 
 const introHeaderVariants = {
   hide: {
@@ -83,16 +84,14 @@ export function HeroOne() {
             transition={{ duration: 3, ease: "easeOut" }}
             className="flex justify-center items-center"
           >
-            <img
+            <Image // Replace img with Image
               className="relative z-10 rounded-lg shadow-lg mx-auto"
-              src="/images/hero1.jpg"
+              src="/images/hero1.jpg" // Ensure this path is correct
               alt="Hero Image"
-              style={{
-                width: '60%', // Adjust for responsiveness
-                height: 'auto', // Maintain aspect ratio
-                marginTop: '10%',
-                 // Adjust position for centering
-              }}
+              width={600} // Specify the width
+              height={400} // Specify the height
+              layout="responsive" // Add layout for responsiveness
+              priority // Optional: Load the image early
             />
           </motion.div>
         </div>

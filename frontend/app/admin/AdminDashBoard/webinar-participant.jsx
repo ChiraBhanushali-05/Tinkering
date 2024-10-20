@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import Image from 'next/image'; // Import the Image component
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../../../components/ui/card";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
@@ -73,23 +74,25 @@ export function WebinarParticipants() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {webinars.map((webinar) => (
             <Card key={webinar._id}>
-            <CardHeader>
-              <CardTitle>{webinar.name}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {/* Dynamically fetch the image from the webinar object */}
-              <img 
-                src={`${process.env.NEXT_PUBLIC_API_URL}/${webinar.image}`} 
-                alt={webinar.name} 
-                className="w-full h-40 object-cover rounded-md mb-4" 
-              />
-              <p className="text-sm text-gray-600">ID: {webinar._id}</p>
-              <p className="text-sm text-gray-600">Date & Time: {webinar.dateTime}</p> {/* Assuming dateTime exists in response */}
-            </CardContent>
-            <CardFooter>
-              <Button onClick={() => setSelectedWebinar(webinar)}>View Participants</Button>
-            </CardFooter>
-</Card>
+              <CardHeader>
+                <CardTitle>{webinar.name}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {/* Replace img with Image */}
+                <Image 
+                  src={`${process.env.NEXT_PUBLIC_API_URL}/${webinar.image}`} 
+                  alt={webinar.name} 
+                  width={640} // Set a specific width
+                  height={160} // Set a specific height
+                  className="w-full h-40 object-cover rounded-md mb-4" 
+                />
+                <p className="text-sm text-gray-600">ID: {webinar._id}</p>
+                <p className="text-sm text-gray-600">Date & Time: {webinar.dateTime}</p> {/* Assuming dateTime exists in response */}
+              </CardContent>
+              <CardFooter>
+                <Button onClick={() => setSelectedWebinar(webinar)}>View Participants</Button>
+              </CardFooter>
+            </Card>
           ))}
         </div>
       ) : (

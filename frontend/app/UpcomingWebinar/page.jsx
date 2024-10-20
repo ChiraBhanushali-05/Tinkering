@@ -1,8 +1,10 @@
-"use client"
+"use client";
 import { useEffect, useState } from 'react';
 import { Card, CardContent } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
 import ExampleNavbarThree from "../../components/Navigation";
+import Image from 'next/image';
+
 function Toast({ message }) {
   return (
     <div className="fixed bottom-4 right-4 bg-green-500 text-white py-2 px-4 rounded shadow-lg">
@@ -10,12 +12,11 @@ function Toast({ message }) {
     </div>
   );
 }
+
 function RegistrationForm({ onClose, onSubmit, user, webinarId }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Call the API to register the user for the webinar
-    await onSubmit(); // No need to pass the WhatsApp number
+    await onSubmit();
     onClose();
   };
 
@@ -30,7 +31,7 @@ function RegistrationForm({ onClose, onSubmit, user, webinarId }) {
               type="text"
               value={user?.name || ''}
               className="w-full p-2 border border-gray-300 rounded"
-              disabled // Make the field non-editable
+              disabled
             />
           </div>
           <div className="mb-4">
@@ -39,16 +40,16 @@ function RegistrationForm({ onClose, onSubmit, user, webinarId }) {
               type="email"
               value={user?.email || ''}
               className="w-full p-2 border border-gray-300 rounded"
-              disabled // Make the field non-editable
+              disabled
             />
           </div>
           <div className="mb-4">
             <label className="block text-sm font-semibold mb-2">Enrollment Number</label>
             <input
               type="text"
-              value={user?.enrollmentNo || ''} // Display the enrollment number
+              value={user?.enrollmentNo || ''}
               className="w-full p-2 border border-gray-300 rounded"
-              disabled // Make the field non-editable
+              disabled
             />
           </div>
           <div className="flex justify-end">
@@ -63,19 +64,18 @@ function RegistrationForm({ onClose, onSubmit, user, webinarId }) {
 }
 
 function WebinarCard({ title, presenter, date, description, imageSrc, onRegister, user, webinar }) {
-  // Check if the user has registered for the webinar
   const isRegistered = user?.registeredWebinars?.some((w) => w.webinarId === webinar._id);
-
-  // Determine if the button should be disabled
   const isButtonDisabled = user?.registeredWebinars?.length > 0 ? isRegistered : false;
 
   return (
     <Card className="max-w-xs w-full flex flex-col rounded-lg overflow-hidden">
-      <div className="w-full h-48">
-        <img
+      <div className="w-full h-48 relative">
+        <Image
           src={imageSrc}
           alt="Webinar thumbnail"
-          className="w-full h-full object-cover object-center"
+          layout="fill"
+          objectFit="cover"
+          objectPosition="center"
         />
       </div>
       <CardContent className="p-3 space-y-2 flex-grow">
@@ -85,7 +85,7 @@ function WebinarCard({ title, presenter, date, description, imageSrc, onRegister
         <p className="text-sm">{description}</p>
         <Button
           onClick={() => onRegister(webinar._id)}
-          disabled={isButtonDisabled} // Disable the button based on the modified logic
+          disabled={isButtonDisabled}
           className={`w-full ${isButtonDisabled ? 'bg-gray-400' : 'bg-black hover:bg-gray-600'} text-white text-sm py-2`}
         >
           {isButtonDisabled ? 'Registered' : 'Register'}
@@ -94,14 +94,14 @@ function WebinarCard({ title, presenter, date, description, imageSrc, onRegister
     </Card>
   );
 }
+
 export default function WebinarCards() {
   const [webinars, setWebinars] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [user, setUser] = useState(null);
-  const [selectedWebinarId, setSelectedWebinarId] = useState(null); // To store the selected webinar ID
+  const [selectedWebinarId, setSelectedWebinarId] = useState(null);
 
-  // Fetch webinars from the API
   const fetchWebinars = async () => {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/webinars`);
@@ -112,50 +112,39 @@ export default function WebinarCards() {
     }
   };
 
-  // Fetch user session data
- // Fetch user session data
-const fetchUserSession = async () => {
-  try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/session`, {
-      credentials: 'include',
-    });
-    
-    // Check if the response is okay (status 200-299)
-    if (!response.ok) {
-      throw new Error('Failed to fetch user session');
+  const fetchUserSession = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/session`, {
+        credentials: 'include',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch user session');
+      }
+      const data = await response.json();
+      setUser(data.user);
+    } catch (error) {
+      console.error('Error fetching user session:', error);
+      setUser(null);
     }
-
-    const data = await response.json();
-    setUser(data.user); // This will now include registeredWebinars
-  } catch (error) {
-    console.error('Error fetching user session:', error);
-    setUser(null); // Optionally reset user if fetching fails
-  }
-};
-
+  };
 
   useEffect(() => {
     fetchWebinars();
-    fetchUserSession(); // Fetch user session data on mount
+    fetchUserSession();
   }, []);
 
-  // Handle registration button click
   const handleRegister = (webinarId) => {
-    setSelectedWebinarId(webinarId); // Store the selected webinar ID
+    setSelectedWebinarId(webinarId);
     setShowForm(true);
   };
 
-  // Handle closing the registration form
   const handleCloseForm = () => {
     setShowForm(false);
   };
 
-  // Handle form submission and show toast notification
   const handleFormSubmit = async () => {
-    // Print the selected webinar ID to the console
     console.log('Webinar ID:', selectedWebinarId);
-  
-    // Send data to the API endpoint
+
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/register`, {
       method: 'POST',
       headers: {
@@ -163,27 +152,23 @@ const fetchUserSession = async () => {
       },
       body: JSON.stringify({
         webinarId: selectedWebinarId,
-        enrollmentNo: user.enrollmentNo, // Pass the enrollment number
-        userId: user._id, // Send the user's ID
-        userName: user.name, // Send the user's name
-        email: user.email, // Send the user's email
-        // No phoneNumber field needed anymore
+        enrollmentNo: user.enrollmentNo,
+        userId: user._id,
+        userName: user.name,
+        email: user.email,
       }),
     });
-  
+
     if (response.ok) {
-      // Show success toast
       setShowToast(true);
       setTimeout(() => {
         setShowToast(false);
-      }, 4000); // Hide the toast after 4 seconds
+      }, 4000);
     } else {
       const errorData = await response.json();
       console.error('Registration failed:', errorData.message);
-      // You can also show an error toast here if needed
     }
   };
-  
 
   return (
     <main className="flex min-h-screen flex-col items-center p-8 justify-between bg-primary_color1">
@@ -194,7 +179,7 @@ const fetchUserSession = async () => {
         </h1>
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-stretch">
-          {webinars.map((webinar) => (
+            {webinars.map((webinar) => (
               <WebinarCard
                 key={webinar._id}
                 title={webinar.webinarName}
@@ -203,11 +188,10 @@ const fetchUserSession = async () => {
                 description={webinar.description}
                 imageSrc={`${process.env.NEXT_PUBLIC_API_URL}/${webinar.image}`}
                 onRegister={() => handleRegister(webinar._id)}
-                user={user} // Pass the user object here
-                webinar={webinar} // Pass the webinar object to check registration
+                user={user}
+                webinar={webinar}
               />
             ))}
-
           </div>
         </div>
       </div>
@@ -217,7 +201,7 @@ const fetchUserSession = async () => {
           onClose={handleCloseForm}
           onSubmit={handleFormSubmit}
           user={user}
-          webinarId={selectedWebinarId} // Pass the selected webinar ID
+          webinarId={selectedWebinarId}
         />
       )}
       {showToast && <Toast message="Registered Successfully" />}

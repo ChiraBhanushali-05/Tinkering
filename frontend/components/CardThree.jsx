@@ -1,5 +1,6 @@
 'use client'
 import React from 'react';
+import Image from 'next/image';
 import { ArrowUpRight } from 'lucide-react';
 
 export function CardThree() {
@@ -36,9 +37,11 @@ export function CardThree() {
       <div className="flex flex-wrap justify-center gap-4 p-4">
         {cards.map((card, index) => (
           <div key={index} className="w-full sm:w-[300px] md:w-[250px] lg:w-[300px] rounded-md border overflow-hidden">
-            <img
+            <Image
               src={card.imageUrl}
               alt={card.title}
+              width={300} // Set the width based on your layout
+              height={200} // Set the height based on your layout
               className="h-[200px] w-full object-cover"
             />
             <div className="p-4">

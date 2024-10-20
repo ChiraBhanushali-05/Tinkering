@@ -18,6 +18,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "../../../components/ui/pagination";
+import Image from 'next/image'; // Importing Image from next/image
 
 const ITEMS_PER_PAGE = 5;
 
@@ -26,7 +27,7 @@ export function InternAssignments() {
     {
       id: 1,
       name: "Web Development Lab",
-      image: "/placeholder.svg?height=100&width=200",
+      image: "/placeholder.svg",
       interns: [
         { id: "WD001", name: "John Doe", project: "E-commerce Site", pc: "PC-001", startDate: "2023-06-01", endDate: "2023-08-31" },
         { id: "WD002", name: "Jane Smith", project: "Blog Platform", pc: "PC-002", startDate: "2023-06-15", endDate: "2023-09-15" },
@@ -35,7 +36,7 @@ export function InternAssignments() {
     {
       id: 2,
       name: "Mobile App Lab",
-      image: "/placeholder.svg?height=100&width=200",
+      image: "/placeholder.svg",
       interns: [
         { id: "MA001", name: "Alice Johnson", project: "Fitness App", pc: "PC-003", startDate: "2023-07-01", endDate: "2023-09-30" },
         { id: "MA002", name: "Bob Williams", project: "Social Media App", pc: "PC-004", startDate: "2023-07-15", endDate: "2023-10-15" },
@@ -44,7 +45,7 @@ export function InternAssignments() {
     {
       id: 3,
       name: "AI Research Lab",
-      image: "/placeholder.svg?height=100&width=200",
+      image: "/placeholder.svg",
       interns: [
         { id: "AI001", name: "Charlie Brown", project: "Natural Language Processing", pc: "PC-005", startDate: "2023-08-01", endDate: "2023-11-30" },
       ]
@@ -52,7 +53,7 @@ export function InternAssignments() {
     {
       id: 4,
       name: "IoT Lab",
-      image: "/placeholder.svg?height=100&width=200",
+      image: "/placeholder.svg",
       interns: [
         { id: "IOT001", name: "Diana Prince", project: "Smart Home System", pc: "PC-006", startDate: "2023-08-15", endDate: "2023-11-15" },
       ]
@@ -60,7 +61,7 @@ export function InternAssignments() {
     {
       id: 5,
       name: "Data Science Lab",
-      image: "/placeholder.svg?height=100&width=200",
+      image: "/placeholder.svg",
       interns: [
         { id: "DS001", name: "Ethan Hunt", project: "Predictive Analytics", pc: "PC-007", startDate: "2023-09-01", endDate: "2023-12-31" },
       ]
@@ -95,7 +96,13 @@ export function InternAssignments() {
                 <CardTitle>{lab.name}</CardTitle>
               </CardHeader>
               <CardContent>
-                <img src={lab.image} alt={lab.name} className="w-full h-40 object-cover rounded-md mb-4" />
+                <Image 
+                  src={lab.image} 
+                  alt={lab.name} 
+                  width={400} 
+                  height={200} 
+                  className="w-full h-40 object-cover rounded-md mb-4" 
+                />
               </CardContent>
               <CardFooter>
                 <Button onClick={() => setSelectedLab(lab)}>View Interns</Button>

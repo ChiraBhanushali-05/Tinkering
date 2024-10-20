@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image' // Import Image component
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../../../components/ui/card"
 import { Button } from "../../../components/ui/button"
 import { Input } from "../../../components/ui/input"
@@ -102,7 +103,13 @@ export function LabBookings() {
                 <CardTitle>{lab.name}</CardTitle>
               </CardHeader>
               <CardContent>
-                <img src={lab.image} alt={lab.name} className="w-full h-40 object-cover rounded-md mb-4" />
+                <Image 
+                  src={lab.image} 
+                  alt={lab.name} 
+                  width={200} 
+                  height={100} 
+                  className="w-full h-40 object-cover rounded-md mb-4" 
+                />
                 <p className="text-sm text-gray-600">ID: {lab.id}</p>
                 <p className="text-sm text-gray-600">{lab.description}</p>
               </CardContent>

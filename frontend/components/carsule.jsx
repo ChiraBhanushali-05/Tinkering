@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from "react";
+import Image from 'next/image';
 import { motion } from "framer-motion";
 import { Card } from "../components/ui/card"; 
 import {
@@ -62,11 +63,13 @@ export function CarouselSpacing() {
             className="flex justify-center w-full"
           >
             <Card
-              className="flex flex-col items-center text-center p-6 bg-white rounded-lg shadow-lg w-64 h-60 md:w-56 md:h-64 lg:w-64 lg:h-80" // Further reduced size for md screens
+              className="flex flex-col items-center text-center p-6 bg-white rounded-lg shadow-lg w-64 h-60 md:w-56 md:h-64 lg:w-64 lg:h-80"
             >
-              <img
+              <Image
                 src={card.imageSrc}
                 alt={card.title}
+                width={80} // Adjust the width based on the layout
+                height={72} // Adjust the height based on the layout
                 className="w-20 h-18 mb-4 object-contain"
               />
               <h3 className="text-lg font-medium mb-2">{card.title}</h3>
@@ -96,9 +99,11 @@ export function CarouselSpacing() {
           {cards.map((card, index) => (
             <CarouselItem key={index} className="flex-none w-full p-4">
               <Card className="flex flex-col items-center text-center p-6 bg-white rounded-lg shadow-lg h-64">
-                <img
+                <Image
                   src={card.imageSrc}
                   alt={card.title}
+                  width={64} // Adjust the width based on the layout
+                  height={64} // Adjust the height based on the layout
                   className="w-16 h-16 mb-4 object-contain"
                 />
                 <h3 className="text-lg font-medium mb-2">{card.title}</h3>

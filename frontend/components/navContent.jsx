@@ -80,7 +80,7 @@ const TechSupportInternshipSection = () => (
     </div>
     <div className="flex-1 flex justify-center">
   {/* Replace the carousel with an image */}
-  <img
+  <Image
     src="/images/intern1.jpg"
     alt="Tech Support and Internship"
     className="w-3/4 h-auto rounded-lg shadow-lg"

@@ -1,6 +1,7 @@
   "use client";
 
   import { motion } from "framer-motion";
+  import Image from 'next/image';
   import { Menu } from "lucide-react";
   import { useEffect, useState } from "react";
   import Link from "next/link";
@@ -150,13 +151,13 @@
               <div className="flex w-full items-center justify-between">
                 <div className="inline-flex items-center space-x-2">
                 <span className="w-14">
-                    <img src="/images/th.png" alt="Tinkering Hub Logo" />
+                <Image src="/images/th.png" alt="Tinkering Hub Logo" width={56} height={56} />
                   </span>
                   <Link href="/">
                     <BlurIn word="Tinkering Hub" className="font-bold text-black dark:text-white" />
                   </Link>
                   <span className="w-40">
-                    <img src="/images/logo1.png" alt="Tinkering Hub Logo" />
+                  <Image src="/images/logo1.png" alt="Tinkering Hub Logo" width={160} height={40} />
                   </span>
                 </div>
                 <div className="flex grow justify-end mr-2 hidden lg:flex">

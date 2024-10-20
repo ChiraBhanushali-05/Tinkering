@@ -1,7 +1,7 @@
-'use client'
+'use client';
+
 import * as React from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-
 import { Card, CardContent } from "../components/ui/card";
 import {
   Carousel,
@@ -10,32 +10,36 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "../components/ui/carousel";
+import Image from 'next/image'; // Import Image from next/image
 
 export function CarouselSize() {
   const containerRef = React.useRef(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start end", "start start"]
+    offset: ["start end", "start start"],
   });
 
   const x = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       transition={{ duration: 0.75, delay: 0.5, ease: "easeOut" }}
       viewport={{ once: true }}
     >
-      <div ref={containerRef} className="relative w-full overflow-hidden bg-primary_color2 rounded-lg">
+      <div
+        ref={containerRef}
+        className="relative w-full overflow-hidden bg-primary_color2 rounded-lg"
+      >
         {/* Carousel for large screens */}
         <div className="hidden md:block">
           <Carousel
             opts={{
               align: "start",
               loop: true,
-              perPage: 5, // Number of items visible at a time
-              gap: '1rem', // Gap between items
+              perPage: 5,
+              gap: "1rem",
             }}
             className="w-full py-5"
           >
@@ -51,9 +55,11 @@ export function CarouselSize() {
                   <div className="p-1">
                     <Card className="w-20 h-20 flex items-center justify-center">
                       <CardContent className="flex items-center bg-primary_color2 justify-center p-2">
-                        <img
+                        <Image
                           src={`/images/icon${index + 1}.png`}
                           alt={`Icon ${index + 1}`}
+                          width={64} // Specify width
+                          height={64} // Specify height
                           className="w-16 h-16 object-contain"
                         />
                       </CardContent>
@@ -63,9 +69,9 @@ export function CarouselSize() {
               ))}
             </CarouselContent>
 
-            {/* Positioning arrows */}
-            <CarouselPrevious className="absolute text-black left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full shadow-lg p-2" />
-            <CarouselNext className="absolute text-black right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full shadow-lg p-2" />
+            {/* Arrows */}
+            <CarouselPrevious className="absolute text-black left-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full shadow-lg p-2" />
+            <CarouselNext className="absolute text-black right-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full shadow-lg p-2" />
           </Carousel>
         </div>
 
@@ -75,8 +81,8 @@ export function CarouselSize() {
             opts={{
               align: "start",
               loop: true,
-              perPage: 2, // Fewer items visible at a time
-              gap: '1rem', // Gap between items
+              perPage: 2,
+              gap: "1rem",
             }}
             className="w-full py-5"
           >
@@ -89,15 +95,17 @@ export function CarouselSize() {
                   key={index}
                   className="flex-shrink-0 flex justify-center items-center"
                   style={{
-                    width: '50%', // Adjust for smaller screens
+                    width: "50%",
                   }}
                 >
                   <div className="p-1">
                     <Card className="w-20 h-20 flex items-center justify-center">
                       <CardContent className="flex items-center justify-center p-2">
-                        <img
+                        <Image
                           src={`/images/icon${index + 1}.png`}
                           alt={`Icon ${index + 1}`}
+                          width={64} // Specify width
+                          height={64} // Specify height
                           className="w-16 h-16 object-contain"
                         />
                       </CardContent>
@@ -107,9 +115,9 @@ export function CarouselSize() {
               ))}
             </CarouselContent>
 
-            {/* Positioning arrows */}
-            <CarouselPrevious className="absolute text-black left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full shadow-lg p-2" />
-            <CarouselNext className="absolute text-black right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full shadow-lg p-2" />
+            {/* Arrows */}
+            <CarouselPrevious className="absolute text-black left-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full shadow-lg p-2" />
+            <CarouselNext className="absolute text-black right-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full shadow-lg p-2" />
           </Carousel>
         </div>
       </div>

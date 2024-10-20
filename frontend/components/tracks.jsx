@@ -1,5 +1,6 @@
-'use client'
+'use client';
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 const cardTitles = [
   "Track 1:APP-O-THON",
@@ -13,14 +14,22 @@ const cardTitles = [
 ];
 
 const Tracks = () => {
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    
+    // Set initial state if window is defined
+    if (typeof window !== 'undefined') {
+      handleResize();
+      window.addEventListener('resize', handleResize);
+    }
 
-    window.addEventListener('resize', handleResize);
-
-    return () => window.removeEventListener('resize', handleResize);
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('resize', handleResize);
+      }
+    };
   }, []);
 
   return (
@@ -32,10 +41,12 @@ const Tracks = () => {
       <div className={`grid ${isMobile ? 'hidden' : 'grid-cols-1 md:grid-cols-4'} gap-4 mt-8 justify-items-center`}>
         {cardTitles.map((title, index) => (
           <div key={index} className="relative w-48 h-64 rounded-lg overflow-hidden mb-4 shadow-md">
-            <img
+            <Image
               src={`/images/track${index + 1}.jpg`}
               alt={`Card ${index + 1}`}
               className="w-full h-full object-cover rounded-lg"
+              width={192} // Adjust as needed
+              height={256} // Adjust as needed
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-lg"></div>
             <div className="absolute bottom-4 left-4 text-white text-left">
@@ -48,10 +59,12 @@ const Tracks = () => {
       <div className={`flex ${isMobile ? 'block' : 'hidden'} overflow-x-auto mt-8`}>
         {cardTitles.map((title, index) => (
           <div key={index} className="relative w-48 h-64 flex-shrink-0 mr-4">
-            <img
+            <Image
               src={`/images/track${index + 1}.jpg`}
               alt={`Card ${index + 1}`}
               className="w-full h-full object-cover rounded-lg"
+              width={192} // Adjust as needed
+              height={256} // Adjust as needed
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-lg"></div>
             <div className="absolute bottom-4 left-4 text-white text-left">
