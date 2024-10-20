@@ -1,10 +1,8 @@
-// next.config.mjs
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    images: {
-      domains: ['localhost'], // Add 'localhost' to allowed image domains
-    },
-  };
-  
-  export default nextConfig;
-  
+  images: {
+      domains: ['localhost', 'images.unsplash.com'], // Add 'images.unsplash.com' to allowed image domains
+  },
+};
+
+export default nextConfig;
