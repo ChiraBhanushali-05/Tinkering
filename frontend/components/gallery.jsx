@@ -12,7 +12,7 @@ const imageData = [
   { src: '/images/p6(team1).jpg', alt: 'Gallery Image 6', size: 'rectangle' },
   { src: '/images/p7(team2).jpg', alt: 'Gallery Image 7', size: 'square' },
   { src: '/images/p8.jpg', alt: 'Gallery Image 8', size: 'rectangle' },
-  {src: '/images/p9.jpg', alt: 'Gallery Image 8', size: 'square' },
+  { src: '/images/p9.jpg', alt: 'Gallery Image 9', size: 'square' },
 ];
 
 const GallerySection = () => {
@@ -20,10 +20,10 @@ const GallerySection = () => {
     <div className="mt-8">
       <h2 className="text-4xl text-black font-bold text-center mt-8">Gallery</h2>
       
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-1 mt-6 p-8">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-1 mt-6 p-4 md:p-8">
         {imageData.map((image, index) => (
           <BlurFade key={index} duration={0.5} delay={index * 0.1}>
-            <div className={`relative ${image.size === 'square' ? 'w-80 h-60 aspect-square' : 'w-full h-96'} flex justify-end items-end`}>
+            <div className={`relative ${image.size === 'square' ? 'w-full h-48 sm:h-60' : 'w-full h-60 sm:h-96'} flex justify-center items-center`}>
               <Image
                 src={image.src}
                 alt={image.alt}
@@ -40,4 +40,3 @@ const GallerySection = () => {
 };
 
 export default GallerySection;
-
