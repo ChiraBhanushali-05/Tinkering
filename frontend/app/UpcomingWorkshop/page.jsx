@@ -1,202 +1,210 @@
 "use client";
-
-import React, { useState, useEffect } from "react";
-import { getColumns } from "./columns";
-import { DataTable } from "./data-table";
-import { ExampleNavbarThree } from "../../components/Navigation";
+import { useEffect, useState } from 'react';
+import { Card, CardContent } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
-import { X } from "lucide-react";
+import ExampleNavbarThree from "../../components/Navigation";
+import Image from 'next/image';
 
-// Function to fetch workshop data
-async function getData() {
-  try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/workshops`);
-    if (!response.ok) {
-      throw new Error("Failed to fetch workshops");
-    }
-
-    const workshops = await response.json();
-    const formattedWorkshops = workshops.map((workshop) => {
-      const date = new Date(workshop.date);
-      const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
-
-      return {
-        ...workshop,
-        date: formattedDate,
-      };
-    });
-
-    return formattedWorkshops;
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    return [];
-  }
+function Toast({ message }) {
+  return (
+    <div className="fixed bottom-4 right-4 bg-green-500 text-white py-2 px-4 rounded shadow-lg">
+      {message}
+    </div>
+  );
 }
 
-// Function to fetch user data
-async function getUserData() {
-  try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/session`, {
-      credentials: 'include', // Include credentials with the request
-    });
+function RegistrationForm({ onClose, onSubmit, user, webinarId }) {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await onSubmit();
+    onClose();
+  };
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch user data");
-    }
-
-    const data = await response.json();
-    console.log("Fetched User Data:", data.user); // Log the entire fetched user data
-    return data.user; // Return the user object for further use
-  } catch (error) {
-    console.error("Error fetching user data:", error);
-    return {}; // Return an empty object if an error occurs
-  }
+  return (
+    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+        <h2 className="text-lg font-bold mb-4">Register for Webinar</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block text-sm font-semibold mb-2">Name</label>
+            <input
+              type="text"
+              value={user?.name || ''}
+              className="w-full p-2 border border-gray-300 rounded"
+              disabled
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-semibold mb-2">Email</label>
+            <input
+              type="email"
+              value={user?.email || ''}
+              className="w-full p-2 border border-gray-300 rounded"
+              disabled
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-semibold mb-2">Enrollment Number</label>
+            <input
+              type="text"
+              value={user?.enrollmentNo || ''}
+              className="w-full p-2 border border-gray-300 rounded"
+              disabled
+            />
+          </div>
+          <div className="flex justify-end">
+            <Button type="submit" className="bg-black text-white px-4 py-2 rounded">
+              Submit
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 }
 
-export default function DemoPage() {
-  const [data, setData] = useState([]); // State for holding fetched workshop data
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [selectedRow, setSelectedRow] = useState(null);
-  const [userData, setUserData] = useState({
-    userId: '', // Field for MongoDB user ID
-    name: '',
-    enrollmentNumber: '',
-    whatsappNumber: ''
-  });
-  
-  // New state to track if the user is registered for the selected workshop
-  const [isRegistered, setIsRegistered] = useState(false); 
+function WebinarCard({ title, presenter, date, description, imageSrc, onRegister, user, webinar }) {
+  const isRegistered = user?.registeredWebinars?.some((w) => w.webinarId === webinar._id);
+  const isButtonDisabled = user?.registeredWebinars?.length > 0 ? isRegistered : false;
+
+  return (
+    <Card className="max-w-xs w-full flex flex-col rounded-lg overflow-hidden">
+      <div className="w-full h-48 relative">
+        <Image
+          src={imageSrc}
+          alt="Webinar thumbnail"
+          layout="fill"
+          objectFit="cover"
+          objectPosition="center"
+        />
+      </div>
+      <CardContent className="p-3 space-y-2 flex-grow">
+        <h2 className="text-lg font-bold text-brown">{title}</h2> {/* Displaying the title */}
+        <p className="text-sm font-semibold text-secondary">Presenter: {presenter}</p>
+        <p className="text-xs text-gray-600">Date: {new Date(date).toLocaleDateString()}</p>
+        <p className="text-sm">{description}</p>
+        <Button
+          onClick={() => onRegister(webinar._id)}
+          disabled={isButtonDisabled}
+          className={`w-full ${isButtonDisabled ? 'bg-gray-400' : 'bg-black hover:bg-gray-600'} text-white text-sm py-2`}
+        >
+          {isButtonDisabled ? 'Registered' : 'Register'}
+        </Button>
+      </CardContent>
+    </Card>
+  );
+}
+
+export default function WebinarCards() {
+  const [webinars, setWebinars] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [user, setUser] = useState(null);
+  const [selectedWebinarId, setSelectedWebinarId] = useState(null);
+
+  const fetchWebinars = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/webinars`);
+      const data = await response.json();
+      setWebinars(data);
+    } catch (error) {
+      console.error('Error fetching webinars:', error);
+    }
+  };
+
+  const fetchUserSession = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/session`, {
+        credentials: 'include',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch user session');
+      }
+      const data = await response.json();
+      setUser(data.user);
+    } catch (error) {
+      console.error('Error fetching user session:', error);
+      setUser(null);
+    }
+  };
 
   useEffect(() => {
-    async function fetchData() {
-      const result = await getData();
-      setData(result);
-    }
-
-    async function fetchUserData() {
-      const fetchedUserData = await getUserData();
-      if (fetchedUserData) {
-        setUserData({
-          userId: fetchedUserData.id || '', // Save MongoDB user ID
-          name: fetchedUserData.name || '',
-          enrollmentNumber: fetchedUserData.enrollmentNo || '',
-          whatsappNumber: fetchedUserData.phoneNumber || ''
-        });
-      }
-    }
-
-    fetchData();
-    fetchUserData(); // Fetch user data on component mount
+    fetchWebinars();
+    fetchUserSession();
   }, []);
 
-  const handleBookClick = (row) => {
-    const workshopId = row._id;
-
-    // Check if the user is already registered for the selected workshop
-    const userRegistered = row.registeredUsers.find(user => user.enrollmentNo === userData.enrollmentNumber);
-    setIsRegistered(!!userRegistered); // Update the registration status
-    setSelectedRow(row);
-    setIsPopupOpen(true);
+  const handleRegister = (webinarId) => {
+    setSelectedWebinarId(webinarId);
+    setShowForm(true);
   };
 
-  const handleClosePopup = () => {
-    setIsPopupOpen(false);
-    setSelectedRow(null);
-    setIsRegistered(false); // Reset registration status when closing
+  const handleCloseForm = () => {
+    setShowForm(false);
   };
 
-  const handleBookSubmit = async (e) => {
-    e.preventDefault();
+  const handleFormSubmit = async () => {
+    console.log('Webinar ID:', selectedWebinarId);
 
-    const workshopId = selectedRow._id; // Assuming selectedRow contains workshop details
-    const userId = userData.userId; // Use MongoDB user ID
-    const enrollmentNo = userData.enrollmentNumber;
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        webinarId: selectedWebinarId,
+        enrollmentNo: user.enrollmentNo,
+        userId: user._id,
+        userName: user.name,
+        email: user.email,
+      }),
+    });
 
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/workshops/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userId, workshopId, enrollmentNo }), // Pass userId in the request body
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to register for the workshop');
-      }
-
-      const data = await response.json();
-      console.log(data.message); // You can display this message to the user
-
-      // Close the popup after successful registration
-      setIsPopupOpen(false);
-      setIsRegistered(true); // Mark the user as registered
-    } catch (error) {
-      console.error('Error:', error);
-      // You can display an error message to the user
+    if (response.ok) {
+      setShowToast(true);
+      setTimeout(() => {
+        setShowToast(false);
+      }, 4000);
+    } else {
+      const errorData = await response.json();
+      console.error('Registration failed:', errorData.message);
     }
   };
-
-  const columnsWithAction = getColumns(handleBookClick);
 
   return (
     <main className="flex min-h-screen flex-col items-center p-8 justify-between bg-primary_color1">
       <div className="w-full max-w-screen-2xl bg-primary_color2 rounded-lg border border-primary_color3 shadow-lg">
         <ExampleNavbarThree />
-        <h2 className="text-4xl font-bold text-center text-black mb-12 mt-4">
-          Upcoming Workshops
-        </h2>
-        <DataTable columns={columnsWithAction} data={data} />
-      </div>
-
-      {isPopupOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl w-96 relative">
-            <button
-              onClick={handleClosePopup}
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-            >
-              <X size={24} />
-            </button>
-            <h2 className="text-2xl font-bold mb-4 text-black">Book Workshop</h2>
-            <form onSubmit={handleBookSubmit} className="space-y-4">
-              <div>
-                <Label className="text-black" htmlFor="name">Name</Label>
-                <Input 
-                  id="name" 
-                  placeholder="Enter your name" 
-                  value={userData.name} // Automatically populated
-                  required 
-                  readOnly // Set as read-only to prevent changes
-                />
-              </div>
-              <div>
-                <Label className="text-black" htmlFor="enrollmentNumber">Enrollment Number</Label>
-                <Input 
-                  id="enrollmentNumber" 
-                  placeholder="Enter your enrollment number" 
-                  value={userData.enrollmentNumber} // Automatically populated
-                  required 
-                  readOnly // Set as read-only to prevent changes
-                />
-              </div>
-              <div>
-                <Label className="text-black" htmlFor="whatsappNumber">WhatsApp Number</Label>
-                <Input 
-                  id="whatsappNumber" 
-                  placeholder="Enter your WhatsApp number" 
-                  value={userData.whatsappNumber} // Automatically populated
-                  required 
-                  readOnly // Set as read-only to prevent changes
-                />
-              </div>
-              <Button type="submit" className="w-full" disabled={isRegistered}>Book</Button>
-            </form>
+        <h1 className="text-2xl font-bold text-center text-black py-6">
+          Upcoming Workshop
+        </h1>
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-stretch">
+            {webinars.map((webinar) => (
+              <WebinarCard
+                key={webinar._id}
+                title={webinar.webinarName}
+                presenter={webinar.conductor}
+                date={webinar.date}
+                description={webinar.description}
+                 imageSrc={`${process.env.NEXT_PUBLIC_API_URL}/${webinar.image}`}
+                onRegister={() => handleRegister(webinar._id)}
+                user={user}
+                webinar={webinar}
+              />
+            ))}
           </div>
         </div>
+      </div>
+
+      {showForm && (
+        <RegistrationForm
+          onClose={handleCloseForm}
+          onSubmit={handleFormSubmit}
+          user={user}
+          webinarId={selectedWebinarId}
+        />
       )}
+      {showToast && <Toast message="Registered Successfully" />}
     </main>
   );
 }

@@ -79,7 +79,7 @@ function WebinarCard({ title, presenter, date, description, imageSrc, onRegister
         />
       </div>
       <CardContent className="p-3 space-y-2 flex-grow">
-        <h2 className="text-lg font-bold text-brown">{title}</h2>
+        <h2 className="text-lg font-bold text-brown">{title}</h2> {/* Displaying the title */}
         <p className="text-sm font-semibold text-secondary">Presenter: {presenter}</p>
         <p className="text-xs text-gray-600">Date: {new Date(date).toLocaleDateString()}</p>
         <p className="text-sm">{description}</p>
